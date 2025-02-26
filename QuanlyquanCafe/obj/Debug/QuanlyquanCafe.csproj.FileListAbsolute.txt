@@ -8,3 +8,4 @@ D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.csproj.Generat
 D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.csproj.CoreCompileInputs.cache
 D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.exe
 D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.pdb
+D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.Auth.sign_up.resources
