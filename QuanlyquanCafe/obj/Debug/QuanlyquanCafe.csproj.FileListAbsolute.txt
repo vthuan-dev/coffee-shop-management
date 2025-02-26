@@ -1,0 +1,10 @@
+D:\coffee-shop-management\QuanlyquanCafe\bin\Debug\QuanlyquanCafe.exe.config
+D:\coffee-shop-management\QuanlyquanCafe\bin\Debug\QuanlyquanCafe.exe
+D:\coffee-shop-management\QuanlyquanCafe\bin\Debug\QuanlyquanCafe.pdb
+D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.csproj.AssemblyReference.cache
+D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.Form1.resources
+D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.Properties.Resources.resources
+D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.csproj.GenerateResource.cache
+D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.csproj.CoreCompileInputs.cache
+D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.exe
+D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.pdb
