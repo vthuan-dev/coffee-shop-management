@@ -135,7 +135,7 @@ namespace QuanlyquanCafe.Admin
 
         private void btnTable_Click(object sender, EventArgs e)
         {
-            OpenChildForm(new formTables(), "Quản lý bàn");
+            OpenChildForm(new formTables(), "Quản lý cơ sở vật chất");
         }
 
         private void btnPaper_Click(object sender, EventArgs e)

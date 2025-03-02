@@ -26,5 +26,7 @@ namespace QuanlyquanCafe.Admin.Subform
         {
             this.ControlBox = false;
         }
+
+        
     }
 }

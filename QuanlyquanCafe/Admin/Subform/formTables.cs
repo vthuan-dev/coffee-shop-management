@@ -21,5 +21,10 @@ namespace QuanlyquanCafe.Admin.Subform
         {
             this.ControlBox = false;
         }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

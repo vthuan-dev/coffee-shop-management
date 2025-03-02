@@ -130,15 +130,15 @@
             this.pnMain.Controls.Add(this.pnHeader);
             this.pnMain.Location = new System.Drawing.Point(264, 55);
             this.pnMain.Name = "pnMain";
-            this.pnMain.Size = new System.Drawing.Size(923, 444);
+            this.pnMain.Size = new System.Drawing.Size(923, 456);
             this.pnMain.TabIndex = 2;
             // 
             // pnInside
             // 
             this.pnInside.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnInside.Location = new System.Drawing.Point(0, 70);
+            this.pnInside.Location = new System.Drawing.Point(0, 72);
             this.pnInside.Name = "pnInside";
-            this.pnInside.Size = new System.Drawing.Size(923, 374);
+            this.pnInside.Size = new System.Drawing.Size(923, 384);
             this.pnInside.TabIndex = 3;
             // 
             // pnHeader
@@ -152,14 +152,14 @@
             this.pnHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnHeader.Location = new System.Drawing.Point(0, 0);
             this.pnHeader.Name = "pnHeader";
-            this.pnHeader.Size = new System.Drawing.Size(923, 70);
+            this.pnHeader.Size = new System.Drawing.Size(923, 72);
             this.pnHeader.TabIndex = 2;
             // 
             // pictureBox1
             // 
             this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(862, 9);
+            this.pictureBox1.Location = new System.Drawing.Point(862, 10);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(52, 50);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -170,7 +170,7 @@
             // 
             this.pictureBox2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(658, 3);
+            this.pictureBox2.Location = new System.Drawing.Point(658, 4);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(66, 61);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -182,7 +182,7 @@
             this.lblTitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitle.Location = new System.Drawing.Point(12, 21);
+            this.lblTitle.Location = new System.Drawing.Point(12, 22);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(170, 25);
             this.lblTitle.TabIndex = 3;
@@ -194,7 +194,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label3.Location = new System.Drawing.Point(740, 21);
+            this.label3.Location = new System.Drawing.Point(740, 22);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(116, 25);
             this.label3.TabIndex = 3;
