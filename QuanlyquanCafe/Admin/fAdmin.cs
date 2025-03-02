@@ -17,7 +17,18 @@ namespace QuanlyquanCafe.Admin
         public fAdmin()
         {
             InitializeComponent();
+            this.Load += (s, e) => mdiProp();
         }
+        private void mdiProp()
+        {
+            this.SetBevel(false);
+            var mdiClient = Controls.OfType<MdiClient>().FirstOrDefault();
+            if (mdiClient != null)
+            {
+                mdiClient.BackColor = Color.FromArgb(232, 234, 237);
+            }
+        }
+
 
         bool sidebarExpand = true;
 
@@ -79,7 +90,7 @@ namespace QuanlyquanCafe.Admin
 
         private Form activeForm = null; // Biến toàn cục để lưu form hiện tại
 
-        private void OpenChildForm(Form childForm, string title)
+        private async void OpenChildForm(Form childForm, string title)
         {
             // Nếu đã có form nào mở, đóng nó trước
             if (activeForm != null)
@@ -99,6 +110,12 @@ namespace QuanlyquanCafe.Admin
             pnInside.Tag = activeForm; // Lưu form hiện tại
             activeForm.BringToFront();
             activeForm.Show();
+
+            for (double i = 0.0; i <= 1.0; i += 0.1)
+            {
+                childForm.Opacity = i;
+                await Task.Delay(30);
+            }
 
             // Cập nhật tiêu đề
             lblTitle.Text = title;
@@ -130,5 +147,7 @@ namespace QuanlyquanCafe.Admin
         {
             OpenChildForm(new formStat(), "Thống kê");
         }
+
+
     }
 }
