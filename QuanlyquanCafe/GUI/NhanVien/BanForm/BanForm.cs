@@ -23,35 +23,45 @@ namespace QuanlyquanCafe.GUI.NhanVien.BanForm
 
         }
 
-
-        private void dataGridView1_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
         {
 
         }
 
-        private void button1_Click_2(object sender, EventArgs e)
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            new CombineTableForm().ShowDialog();
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
         {
             new BookTableForm().ShowDialog();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            new CombineTableForm().ShowDialog();
+            new MoveTableForm().ShowDialog();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            new SplitBill().ShowDialog();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
             new PaymentForm().ShowDialog();
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            new SplitBill().ShowDialog();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            new MoveTableForm().ShowDialog();
         }
     }
 }
