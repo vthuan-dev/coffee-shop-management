@@ -55,41 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\DAO\DataProvider.cs" />
     <Compile Include="Admin\fAdmin.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Admin\fAdmin.Designer.cs">
       <DependentUpon>fAdmin.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Admin\Subform\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Admin\Subform\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Admin\Subform\Form2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Admin\Subform\Form2.Designer.cs">
-      <DependentUpon>Form2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Admin\Subform\formPaper.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Admin\Subform\formPaper.Designer.cs">
-      <DependentUpon>formPaper.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Admin\Subform\formStat.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Admin\Subform\formStat.Designer.cs">
-      <DependentUpon>formStat.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Admin\Subform\formTables.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Admin\Subform\formTables.Designer.cs">
-      <DependentUpon>formTables.cs</DependentUpon>
     </Compile>
     <Compile Include="Auth\Form1.cs">
       <SubType>Form</SubType>
@@ -108,21 +79,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Admin\fAdmin.resx">
       <DependentUpon>fAdmin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Admin\Subform\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Admin\Subform\Form2.resx">
-      <DependentUpon>Form2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Admin\Subform\formPaper.resx">
-      <DependentUpon>formPaper.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Admin\Subform\formStat.resx">
-      <DependentUpon>formStat.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Admin\Subform\formTables.resx">
-      <DependentUpon>formTables.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Auth\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -154,6 +110,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Admin\DTO\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
