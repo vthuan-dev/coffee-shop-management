@@ -39,10 +39,10 @@ namespace QuanlyquanCafe
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.textBoxPasswd = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxEmail = new System.Windows.Forms.TextBox();
+            this.textBoxPasswd = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel2.SuspendLayout();
@@ -74,6 +74,7 @@ namespace QuanlyquanCafe
             this.button1.TabIndex = 0;
             this.button1.Text = "Login";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
@@ -132,14 +133,6 @@ namespace QuanlyquanCafe
             this.tableLayoutPanel1.Size = new System.Drawing.Size(379, 81);
             this.tableLayoutPanel1.TabIndex = 12;
             // 
-            // textBoxPasswd
-            // 
-            this.textBoxPasswd.Location = new System.Drawing.Point(88, 42);
-            this.textBoxPasswd.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBoxPasswd.Name = "textBoxPasswd";
-            this.textBoxPasswd.Size = new System.Drawing.Size(288, 22);
-            this.textBoxPasswd.TabIndex = 4;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -165,6 +158,16 @@ namespace QuanlyquanCafe
             this.textBoxEmail.Name = "textBoxEmail";
             this.textBoxEmail.Size = new System.Drawing.Size(288, 22);
             this.textBoxEmail.TabIndex = 3;
+            this.textBoxEmail.Text = "ntloc@gmail.com";
+            // 
+            // textBoxPasswd
+            // 
+            this.textBoxPasswd.Location = new System.Drawing.Point(88, 42);
+            this.textBoxPasswd.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBoxPasswd.Name = "textBoxPasswd";
+            this.textBoxPasswd.Size = new System.Drawing.Size(288, 22);
+            this.textBoxPasswd.TabIndex = 4;
+            this.textBoxPasswd.Text = "password";
             // 
             // label1
             // 

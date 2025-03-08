@@ -10,15 +10,15 @@ namespace QuanlyquanCafe.Admin.DAO
 {
     public class DataProvider
     {
-        private static DataProvider singletonInstance;
+        private static DataProvider instance;
 
 
 
         private string connStr = "Data Source=.\\SQLEXPRESS;Initial Catalog=RestaurantManagement;Integrated Security=True;TrustServerCertificate=True";
 
-        public static DataProvider SingletonInstance { 
-            get { if (singletonInstance == null) singletonInstance = new DataProvider(); return DataProvider.singletonInstance; } 
-            private set => DataProvider.singletonInstance = value; 
+        public static DataProvider Instance { 
+            get { if (instance == null) instance = new DataProvider(); return DataProvider.instance; } 
+            private set => DataProvider.instance = value; 
         }
 
         private DataProvider() {}
