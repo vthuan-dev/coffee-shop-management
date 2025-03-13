@@ -15,7 +15,6 @@ namespace QuanlyquanCafe.Admin.DTO
             this.Name = name;
             this.Price = price;
             this.Category = category;
-            this.categoryID = categoryID;
             this.CategoryID = categoryID;
         }
 

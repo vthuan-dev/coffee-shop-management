@@ -8,36 +8,36 @@ using System.Threading.Tasks;
 
 namespace QuanlyquanCafe.Admin.DAO
 {
-    public class CategoryDAO
+    public class MenuCategoryDAO
     {
-        private static CategoryDAO instance;
-        public static CategoryDAO Instance
+        private static MenuCategoryDAO instance;
+        public static MenuCategoryDAO Instance
         {
-            get { if (instance == null) instance = new CategoryDAO(); return CategoryDAO.instance; }
-            private set { CategoryDAO.instance = value; }
+            get { if (instance == null) instance = new MenuCategoryDAO(); return MenuCategoryDAO.instance; }
+            private set { MenuCategoryDAO.instance = value; }
         }
-        private CategoryDAO() { }
-        public List<Category> GetListMenuCategory()
+        private MenuCategoryDAO() { }
+        public List<MenuCategory> GetListMenuCategory()
         {
-            List<Category> list = new List<Category>();
+            List<MenuCategory> list = new List<MenuCategory>();
             string query = "SELECT * FROM dbo.MenuCategory";
             DataTable data = DataProvider.Instance.ExecuteQuery(query);
             foreach (DataRow item in data.Rows)
             {
-                Category category = new Category(item);
+                MenuCategory category = new MenuCategory(item);
                 list.Add(category);
             }
             return list;
         }
 
-        public Category GetCategoryByID(int id)
+        public MenuCategory GetCategoryByID(int id)
         {
-            Category category = null;
+            MenuCategory category = null;
             string query = "SELECT * FROM dbo.MenuCategory WHERE id = " + id;
             DataTable data = DataProvider.Instance.ExecuteQuery(query);
             foreach (DataRow item in data.Rows)
             {
-                category = new Category(item);
+                category = new MenuCategory(item);
                 return category;
             }
             return category;

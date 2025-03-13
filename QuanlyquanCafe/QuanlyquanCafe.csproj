@@ -58,12 +58,17 @@
     <Compile Include="Admin\DAO\AccountDAO.cs" />
     <Compile Include="Admin\DAO\BillDAO.cs" />
     <Compile Include="Admin\DAO\BillInfoDAO.cs" />
-    <Compile Include="Admin\DAO\CategoryDAO.cs" />
+    <Compile Include="Admin\DAO\FacCategoryDAO.cs" />
+    <Compile Include="Admin\DAO\FacilityDAO.cs" />
+    <Compile Include="Admin\DAO\MenuCategoryDAO.cs" />
     <Compile Include="Admin\DAO\DataProvider.cs" />
     <Compile Include="Admin\DAO\MenuDAO.cs" />
     <Compile Include="Admin\DTO\Account.cs" />
     <Compile Include="Admin\DTO\BillInfo.cs" />
-    <Compile Include="Admin\DTO\Category.cs" />
+    <Compile Include="Admin\DTO\Facility.cs" />
+    <Compile Include="Admin\DTO\FacilityCategory.cs" />
+    <Compile Include="Admin\DTO\FacilityDetails.cs" />
+    <Compile Include="Admin\DTO\MenuCategory.cs" />
     <Compile Include="Admin\DTO\MenuDTO.cs" />
     <Compile Include="Admin\fAdmin.cs">
       <SubType>Form</SubType>

@@ -30,6 +30,6 @@ namespace QuanlyquanCafe.Admin.DAO
         {
             string query = string.Format("Delete BillInfo where MenuID = {0}", id);
             DataProvider.Instance.ExecuteNonQuery(query);
-        } 
+        }
     }
 }
