@@ -9,8 +9,9 @@ namespace QuanlyquanCafe.Admin.DTO
 {
     public class Account
     {
-        public Account(string userName, string passWord, string fullName, string email, string role)
+        public Account(int id, string userName, string passWord, string fullName, string email, string role)
         {
+            this.Id = id;
             this.UserName = userName;
             this.PassWord = passWord;
             this.FullName = fullName;
@@ -20,13 +21,14 @@ namespace QuanlyquanCafe.Admin.DTO
 
         public Account(DataRow row)
         {
+            this.Id = (int)row["id"];
             this.UserName = row["userName"].ToString();
             this.PassWord = row["passWord"].ToString();
             this.FullName = row["fullName"].ToString();
             this.Email = row["email"].ToString();
             this.Role = row["role"].ToString();
         }
-
+        private int id;
         private string role;
         private string email;
         private string fullName;
@@ -38,5 +40,6 @@ namespace QuanlyquanCafe.Admin.DTO
         public string FullName { get => fullName; set => fullName = value; }
         public string Email { get => email; set => email = value; }
         public string Role { get => role; set => role = value; }
+        public int Id { get => id; set => id = value; }
     }
 }

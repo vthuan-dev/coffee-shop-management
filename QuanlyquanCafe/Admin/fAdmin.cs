@@ -20,6 +20,8 @@ namespace QuanlyquanCafe.Admin
     public partial class fAdmin : Form
     {
         BindingSource menuList = new BindingSource();
+        BindingSource facilityList = new BindingSource();
+        BindingSource accountList = new BindingSource();
         public fAdmin()
         {
             InitializeComponent();
@@ -30,12 +32,23 @@ namespace QuanlyquanCafe.Admin
 
         void Loading() {
             dtgvMenu.DataSource = menuList;
+            dtgvFac.DataSource = facilityList;
+            dtgvStaff.DataSource = accountList;
 
             LoadDateTimePickerBill();
             LoadListBillByDate(dateBill1.Value, dateBill2.Value);
+
             LoadMenuList();
             AddMenuBinding();
             LoadCategoryIntoCombobox(cbxMenuCate);
+
+            LoadFacilityList();
+            AddFacilityBinding();
+            LoadFacCategoryIntoCombobox(cbxFacCate, "Category");
+            LoadFacCategoryIntoCombobox(cbxFacLocation, "Location");
+
+            LoadAccountList();
+            AddAccountBinding();
         }
         private void mdiProp()
         {
@@ -74,6 +87,22 @@ namespace QuanlyquanCafe.Admin
             dtgvMenu.Columns["Category"].HeaderText = "Danh mục";
         }
 
+        void LoadFacilityList()
+        {
+            facilityList.DataSource = FacilityDAO.Instance.GetListFac();
+            dtgvFac.Columns["Id"].Visible = false;
+            dtgvFac.Columns["FacilityCateID1"].Visible = false;
+
+            dtgvFac.Columns["Name"].HeaderText = "Tên";
+            dtgvFac.Columns["Location1"].HeaderText = "Vị trí";
+            dtgvFac.Columns["Status"].HeaderText = "Trạng thái";
+        }
+
+        void LoadAccountList()
+        {
+            accountList.DataSource = AccountDAO.Instance.GetListAccount();
+        }
+
         void AddMenuBinding()
         {
             txbMenuID.DataBindings.Add(new Binding("Text", dtgvMenu.DataSource, "id", true, DataSourceUpdateMode.Never));
@@ -82,16 +111,89 @@ namespace QuanlyquanCafe.Admin
             //txbMenuCate.DataBindings.Add(new Binding("Text", dtgvMenu.DataSource, "Category", true, DataSourceUpdateMode.Never));
         }
 
+        void AddFacilityBinding()
+        {
+            txbFacID.DataBindings.Add(new Binding("Text", dtgvFac.DataSource, "id", true, DataSourceUpdateMode.Never));
+            txbFacName.DataBindings.Add(new Binding("Text", dtgvFac.DataSource, "Name", true, DataSourceUpdateMode.Never));
+            
+            //txbMenuCate.DataBindings.Add(new Binding("Text", dtgvMenu.DataSource, "Category", true, DataSourceUpdateMode.Never));
+        }
+
+        void AddAccountBinding()
+        {
+            txbStaffID.DataBindings.Add(new Binding("Text", dtgvStaff.DataSource, "uid", true, DataSourceUpdateMode.Never));
+            txbStaffName.DataBindings.Add(new Binding("Text", dtgvStaff.DataSource, "FullName", true, DataSourceUpdateMode.Never));
+        }
+
         void LoadCategoryIntoCombobox(ComboBox cb)
         {
-            cb.DataSource = CategoryDAO.Instance.GetListMenuCategory();
+            cb.DataSource = MenuCategoryDAO.Instance.GetListMenuCategory();
             cb.DisplayMember = "Name";
         }
+        void LoadFacCategoryIntoCombobox(ComboBox cb, string type, int? facilityCateID = null)
+        {
+            switch (type)
+            {
+                case "Category":
+                    cb.DataSource = FacCategoryDAO.Instance.GetListFacCategory();
+                    cb.DisplayMember = "Name";
+                    break;
+
+                case "Location":
+                    cb.DataSource = FacCategoryDAO.Instance.GetLocations(); 
+                    break;
+                case "Status":
+                    // Kiểm tra facilityCateID để xác định trạng thái
+                    if (facilityCateID.HasValue)
+                    {
+                        // Nếu facilityCateID là 1, 2, hoặc 3, áp dụng trạng thái dành cho bàn
+                        if (facilityCateID == 1 || facilityCateID == 2 || facilityCateID == 3)
+                        {
+                            cb.Items.Clear();
+                            cb.Items.Add("Trống");
+                            cb.Items.Add("Có người");
+                            cb.Items.Add("Đã đặt");
+                        }
+                        else
+                        {
+                            // Nếu không phải các ID trên, áp dụng trạng thái dành cho loa, máy lạnh
+                            cb.Items.Clear();
+                            cb.Items.Add("Hoạt động");
+                            cb.Items.Add("Hỏng");
+                            cb.Items.Add("Đang sửa chữa");
+                        }
+                    }
+                    break;
+            }
+        }
+
+        //void LoadRolesToComboBox()
+        //{
+        //    DataTable accountList = AccountDAO.Instance.GetListAccount(); // Lấy tất cả tài khoản
+        //    cbxStaffRole.Items.Clear(); // Xóa các mục hiện tại trong ComboBox
+
+        //    // Duyệt qua danh sách tài khoản và thêm Role vào ComboBox
+        //    foreach (DataRow row in accountList.Rows)
+        //    {
+        //        string role = row["Role"].ToString(); // Lấy giá trị Role từ DataRow
+        //        if (!cbxStaffRole.Items.Contains(role)) // Tránh trùng lặp
+        //        {
+        //            cbxStaffRole.Items.Add(role); // Thêm Role vào ComboBox
+        //        }
+        //    }
+        //}
+
 
         List<MenuDTO> SearchMenuName(string name)
         {
             List<MenuDTO> listMenu = MenuDAO.Instance.SearchMenuByName(name);
             return listMenu;
+        }
+
+        List<Facility> SearchFacName(string name)
+        {
+            List<Facility> listFac = FacilityDAO.Instance.SearchFacByName(name);
+            return listFac;
         }
 
         #endregion
@@ -106,6 +208,11 @@ namespace QuanlyquanCafe.Admin
             LoadMenuList();
         }
 
+        private void btnFacView_Click(object sender, EventArgs e)
+        {
+            LoadFacilityList(); 
+        }   
+
         private void txbMenuID_TextChanged(object sender, EventArgs e)
         {
             try
@@ -116,12 +223,12 @@ namespace QuanlyquanCafe.Admin
                     if (cellValue != null)
                     {
                         int id = (int)cellValue;
-                        Category cate = CategoryDAO.Instance.GetCategoryByID(id);
+                        MenuCategory cate = MenuCategoryDAO.Instance.GetCategoryByID(id);
                         cbxMenuCate.SelectedItem = cate;
 
                         int index = -1;
                         int i = 0;
-                        foreach (Category item in cbxMenuCate.Items)
+                        foreach (MenuCategory item in cbxMenuCate.Items)
                         {
                             if (item.Id == cate.Id)
                             {
@@ -138,11 +245,158 @@ namespace QuanlyquanCafe.Admin
             catch { }
         }
 
+        private void txbFacID_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dtgvFac.SelectedCells.Count > 0)
+                {
+                    // 📌 Kiểm tra và lấy FacilityCategoryID từ DataGridView
+                    var cellValue2 = dtgvFac.SelectedCells[0].OwningRow.Cells["FacilityCateID1"].Value;
+                    Debug.WriteLine("📌 FacilityCateID1 lấy được: " + (cellValue2 != null ? cellValue2.ToString() : "NULL"));
+
+                    if (cellValue2 != null)
+                    {
+                        int id2 = Convert.ToInt32(cellValue2);
+
+                        if (id2 > 0) // Chỉ lấy nếu ID hợp lệ
+                        {
+                            FacilityCategory cate = FacCategoryDAO.Instance.GetFacCategoryByID(id2);
+                            if (cate != null)
+                            {
+                                Debug.WriteLine("✅ Đã lấy được FacilityCategory: " + cate.Name);
+
+                                // 📌 Kiểm tra danh sách ComboBox trước khi gán SelectedIndex
+                                if (cbxFacCate.Items.Count == 0)
+                                {
+                                    Debug.WriteLine("⚠ cbxFacCate.Items đang rỗng, thêm dữ liệu trước khi gán!");
+                                    return; // Không tiếp tục nếu danh sách rỗng
+                                }
+
+                                int index = -1;
+                                for (int i = 0; i < cbxFacCate.Items.Count; i++)
+                                {
+                                    if (((FacilityCategory)cbxFacCate.Items[i]).Id == cate.Id)
+                                    {
+                                        index = i;
+                                        break;
+                                    }
+                                }
+
+                                if (index >= 0 && index < cbxFacCate.Items.Count)
+                                {
+                                    Debug.WriteLine("✅ Gán SelectedIndex: " + index);
+                                    cbxFacCate.SelectedIndex = index;
+                                }
+                                else
+                                {
+                                    Debug.WriteLine("⚠ Không tìm thấy ID trong danh sách, đặt SelectedIndex = -1");
+                                    cbxFacCate.SelectedIndex = -1;
+                                }
+                            }
+                            else
+                            {
+                                Debug.WriteLine("⚠ Không tìm thấy dữ liệu FacilityCategory!");
+                            }
+                        }
+                        else
+                        {
+                            Debug.WriteLine("⚠ FacilityCateID1 không hợp lệ (<= 0), bỏ qua!");
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine("⚠ FacilityCateID1 là NULL, không thể lấy dữ liệu!");
+                    }
+
+                    // 📌 Kiểm tra và lấy FacilityID từ DataGridView
+                    var cellValue = dtgvFac.SelectedCells[0].OwningRow.Cells[columnName: "Id"].Value;
+                    Debug.WriteLine("📌 FacilityID lấy được: " + (cellValue != null ? cellValue.ToString() : "NULL"));
+
+                    if (cellValue != null)
+                    {
+                        int id = Convert.ToInt32(cellValue);
+
+                        // 🔹 Lấy thông tin Location & Status
+                        FacilityDetails details = FacCategoryDAO.Instance.GetFacilityDetailsByID(id);
+                        if (details != null)
+                        {
+                            cbxFacLocation.SelectedItem = details.Location ?? "Không xác định";
+                            cbxFacStatus.SelectedItem = details.Status ?? "Không có trạng thái phù hợp";
+                            Debug.WriteLine("✅ Đã cập nhật Location & Status");
+                        }
+                        else
+                        {
+                            Debug.WriteLine("⚠ Không tìm thấy dữ liệu FacilityDetails!");
+                        }
+                    }
+
+                    
+                }
+                else
+                {
+                    Debug.WriteLine("⚠ Không có dòng nào được chọn trong DataGridView!");
+                }
+            }
+            catch 
+            {
+                //Debug.WriteLine("❌ Lỗi: " + ex.Message);
+                //MessageBox.Show("Lỗi Index Out Of Range! Hãy kiểm tra dữ liệu đầu vào.");
+            }
+            
+        }
+
+        private void txbStaffID_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dtgvStaff.SelectedCells.Count > 0)
+                {
+                    var cellValue = dtgvMenu.SelectedCells[0].OwningRow.Cells["Id"].Value;
+                    if (cellValue != null)
+                    {
+                        int id = (int)cellValue;
+
+                        // Lấy Role của Account từ cơ sở dữ liệu
+                        DataTable accountList = AccountDAO.Instance.GetListAccount();
+                        string role = "";
+
+                        // Tìm role của account dựa trên id
+                        foreach (DataRow row in accountList.Rows)
+                        {
+                            if (id == (int)row["uid"])
+                            {
+                                role = row["Role"].ToString();
+                                break;
+                            }
+                        }
+
+                        // Cập nhật ComboBox với Role
+                        int index = cbxStaffRole.Items.IndexOf(role);
+                        if (index >= 0)
+                        {
+                            cbxStaffRole.SelectedIndex = index;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                
+            }
+        }
+
+        private void cbxFacCate_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int id2 = (cbxFacCate.SelectedItem as FacilityCategory).Id;
+            LoadFacCategoryIntoCombobox(cbxFacStatus, "Status", id2);
+        }
+
         private void btnMenuAdd_Click(object sender, EventArgs e)
         {
             string name = txbMenuName.Text;
             float price = (float)numMenuPrice.Value;
-            int category = (cbxMenuCate.SelectedItem as Category).Id;
+            int category = (cbxMenuCate.SelectedItem as MenuCategory).Id;
 
             if(MenuDAO.Instance.AddNewItem(name, price, category))
             {
@@ -159,7 +413,7 @@ namespace QuanlyquanCafe.Admin
         {
             string name = txbMenuName.Text;
             float price = (float)numMenuPrice.Value;
-            int category = (cbxMenuCate.SelectedItem as Category).Id;
+            int category = (cbxMenuCate.SelectedItem as MenuCategory).Id;
             int id = Convert.ToInt32(txbMenuID.Text);
 
             if (MenuDAO.Instance.UpdateItem(id, name, price, category))
@@ -188,14 +442,73 @@ namespace QuanlyquanCafe.Admin
             }
         }
 
+
         private void btnMenuSearch_Click(object sender, EventArgs e)
         {
             menuList.DataSource = SearchMenuName(txbMenuSearch.Text);
         }
 
+        private void btnFacAdd_Click(object sender, EventArgs e)
+        {
+            int category = (cbxFacCate.SelectedItem as FacilityCategory).Id;
+            string name = txbFacName.Text;
+            string location = cbxFacLocation.SelectedItem.ToString();
+            string status = cbxFacStatus.SelectedItem.ToString();
+
+            if (FacilityDAO.Instance.AddNewItem(category, name, location, status))
+            {
+                MessageBox.Show("Thêm thành công");
+                LoadFacilityList();
+            }
+            else
+            {
+                MessageBox.Show("Có lỗi khi thêm");
+            }
+        }
+
+        private void btnFacEdit_Click(object sender, EventArgs e)
+        {
+            int id = Convert.ToInt32(txbFacID.Text);
+            int category = (cbxFacCate.SelectedItem as FacilityCategory).Id;
+            string name = txbFacName.Text;
+            string location = cbxFacLocation.SelectedItem.ToString();
+            string status = cbxFacStatus.SelectedItem.ToString();
+
+
+            if (FacilityDAO.Instance.UpdateItem(id, category, name, location, status))
+            {
+                MessageBox.Show("Sửa thành công");
+                LoadFacilityList();
+            }
+            else
+            {
+                MessageBox.Show("Có lỗi khi sửa");
+            }
+        }
+
+        private void btnFacDel_Click(object sender, EventArgs e)
+        {
+            int id = Convert.ToInt32(txbFacID.Text);
+            if (FacilityDAO.Instance.DeleteItem(id))
+            {
+                MessageBox.Show("Xóa thành công");
+                LoadFacilityList();
+            }
+            else
+            {
+                MessageBox.Show("Có lỗi khi xóa");
+            }
+        }
+
+        private void btnFacSearch_Click(object sender, EventArgs e)
+        {
+            facilityList.DataSource = SearchFacName(txbFacSearch.Text);
+        }
+
+
 
         #endregion
 
-
+        
     }
 }

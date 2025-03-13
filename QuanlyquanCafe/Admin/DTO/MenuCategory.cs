@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace QuanlyquanCafe.Admin.DTO
 {
-    public class Category
+    public class MenuCategory
     {
-        public Category(int id, string name)
+        public MenuCategory(int id, string name)
         {
             this.Id = id;
             this.Name = name;
         }
 
-        public Category(DataRow row)
+        public MenuCategory(DataRow row)
         {
             this.Id = (int)row["id"];
             this.Name = row["Name"].ToString();

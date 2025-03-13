@@ -31,5 +31,13 @@ namespace QuanlyquanCafe.Admin.DAO
         {
             return DataProvider.Instance.ExecuteQuery("exec Bill_GetListBillByDate @checkIn , @checkOut", new object[] { checkIn, checkOut});
         }
+
+        public void DeleteBillByTableID(int id)
+        {
+            string query = string.Format("Delete BillInfo where BillID in (select id from Bill where TableID = {0})", id);
+            string query1 = string.Format("Delete Bill where TableID = {0}", id);
+            DataProvider.Instance.ExecuteNonQuery(query);
+            DataProvider.Instance.ExecuteNonQuery(query1);
+        }
     }
 }
