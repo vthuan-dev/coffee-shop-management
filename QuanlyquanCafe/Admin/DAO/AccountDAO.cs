@@ -32,16 +32,32 @@ namespace QuanlyquanCafe.Admin.DAO
             return result.Rows.Count > 0;
         }
 
-        public DataTable GetListAccount()
+        public List<Account> GetListAccount()
         {
-             return DataProvider.Instance.ExecuteQuery("SELECT uid, UserName, FullName, Role, Phone, Email FROM Users");
+            List<Account> listAcc = new List<Account>();
+            string query = "SELECT uid, UserName, FullName, Role, Phone, Email FROM Users";
+            DataTable data = DataProvider.Instance.ExecuteQuery(query);
+            foreach (DataRow dr in data.Rows)
+            {
+                Account acc = new Account(dr);
+                listAcc.Add(acc);
+            }
+            return listAcc;
         }
 
         public string GetRoleByID(int id)
         {
             string query = "SELECT Role FROM dbo.Users WHERE uid = " + id;
-            string role = DataProvider.Instance.ExecuteScalar(query).ToString();
-            return role;
+            object result = DataProvider.Instance.ExecuteScalar(query);
+            if (result != null)
+            {
+                return result.ToString();
+            }
+            else
+            {
+                // Handle the case when no role is found
+                return "No role found";
+            }
         }
     }  
 }

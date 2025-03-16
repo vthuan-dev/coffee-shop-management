@@ -49,6 +49,12 @@ namespace QuanlyquanCafe.Admin
 
             LoadAccountList();
             AddAccountBinding();
+
+            foreach (DataGridViewColumn column in dtgvStaff.Columns)
+            {
+                Console.WriteLine(column.HeaderText); // In tên cột
+            }
+
         }
         private void mdiProp()
         {
@@ -121,7 +127,7 @@ namespace QuanlyquanCafe.Admin
 
         void AddAccountBinding()
         {
-            txbStaffID.DataBindings.Add(new Binding("Text", dtgvStaff.DataSource, "uid", true, DataSourceUpdateMode.Never));
+            txbStaffID.DataBindings.Add(new Binding("Text", dtgvStaff.DataSource, "Id", true, DataSourceUpdateMode.Never));
             txbStaffName.DataBindings.Add(new Binding("Text", dtgvStaff.DataSource, "FullName", true, DataSourceUpdateMode.Never));
         }
 
@@ -352,30 +358,24 @@ namespace QuanlyquanCafe.Admin
             {
                 if (dtgvStaff.SelectedCells.Count > 0)
                 {
-                    var cellValue = dtgvMenu.SelectedCells[0].OwningRow.Cells["Id"].Value;
+                    var cellValue = dtgvStaff.SelectedCells[0].OwningRow.Cells["Id"].Value;
                     if (cellValue != null)
                     {
                         int id = (int)cellValue;
+                        string role = AccountDAO.Instance.GetRoleByID(id);
+                        Debug.WriteLine("📌 Role lấy được: " + role);
 
-                        // Lấy Role của Account từ cơ sở dữ liệu
-                        DataTable accountList = AccountDAO.Instance.GetListAccount();
-                        string role = "";
-
-                        // Tìm role của account dựa trên id
-                        foreach (DataRow row in accountList.Rows)
+                        switch (role)
                         {
-                            if (id == (int)row["uid"])
-                            {
-                                role = row["Role"].ToString();
+                            case "Admin":
+                                cbxStaffRole.SelectedIndex = 0;
                                 break;
-                            }
-                        }
-
-                        // Cập nhật ComboBox với Role
-                        int index = cbxStaffRole.Items.IndexOf(role);
-                        if (index >= 0)
-                        {
-                            cbxStaffRole.SelectedIndex = index;
+                            case "Waiter":
+                                cbxStaffRole.SelectedIndex = 1;
+                                break;
+                            case "Manager":
+                                cbxStaffRole.SelectedIndex = 2;
+                                break;
                         }
                     }
                 }
