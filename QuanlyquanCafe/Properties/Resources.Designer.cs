@@ -59,5 +59,15 @@ namespace QuanlyquanCafe.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _7113274 {
+            get {
+                object obj = ResourceManager.GetObject("7113274", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

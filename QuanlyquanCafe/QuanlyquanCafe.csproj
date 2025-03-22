@@ -184,5 +184,9 @@
       <DependentUpon>MainNhanVienForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="assets\images\7113274.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
