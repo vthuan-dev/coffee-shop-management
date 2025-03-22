@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace QuanlyquanCafe.GUI.NhanVien.BanForm.Subforms
+namespace QuanlyquanCafe.GUI.NhanVien.Ban.Subforms
 {
     public partial class PaymentForm: Form
     {

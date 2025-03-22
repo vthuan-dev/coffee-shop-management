@@ -1,4 +1,4 @@
-﻿using QuanlyquanCafe.GUI.NhanVien.BanForm.Subforms;
+﻿using QuanlyquanCafe.GUI.NhanVien.Ban.Subforms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,13 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace QuanlyquanCafe.GUI.NhanVien.BanForm
+namespace QuanlyquanCafe.GUI.NhanVien.Ban
 {
-    public partial class BanForm: Form
+    public partial class BanForm : Form
     {
         public BanForm()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.Dock = DockStyle.Fill;
         }
 
         private void Form1_Load(object sender, EventArgs e)

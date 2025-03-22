@@ -1,9 +1,5 @@
-﻿using QuanlyquanCafe.Admin;
-using QuanlyquanCafe.GUI.NhanVien.BanForm;
+﻿using QuanlyquanCafe.GUI.NhanVien;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace QuanlyquanCafe
@@ -18,7 +14,7 @@ namespace QuanlyquanCafe
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new BanForm());
+            Application.Run(new MainNhanVienForm());
         }
     }
 }

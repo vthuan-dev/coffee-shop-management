@@ -8,18 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace QuanlyquanCafe.GUI.NhanVien.Ban.Subforms
+namespace QuanlyquanCafe.GUI.NhanVien.Menu
 {
-    public partial class CombineTableForm: Form
+    public partial class MenuForm : Form
     {
-        public CombineTableForm()
+        public MenuForm()
         {
             InitializeComponent();
-        }
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.Dock = DockStyle.Fill;
         }
     }
 }

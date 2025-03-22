@@ -10,11 +10,13 @@ using System.Windows.Forms;
 
 namespace QuanlyquanCafe.GUI.NhanVien.PhaChe
 {
-    public partial class PhaCheForm: Form
+    public partial class PhaCheForm : Form
     {
         public PhaCheForm()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.Dock = DockStyle.Fill;
         }
     }
 }

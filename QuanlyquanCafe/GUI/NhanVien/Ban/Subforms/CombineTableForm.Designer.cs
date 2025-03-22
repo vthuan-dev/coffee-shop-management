@@ -1,4 +1,4 @@
-﻿namespace QuanlyquanCafe.GUI.NhanVien.BanForm.Subforms
+﻿namespace QuanlyquanCafe.GUI.NhanVien.Ban.Subforms
 {
     partial class CombineTableForm
     {

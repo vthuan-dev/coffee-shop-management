@@ -1,6 +1,6 @@
-﻿namespace QuanlyquanCafe.GUI.NhanVien.Ban
+﻿namespace QuanlyquanCafe.GUI.NhanVien.Menu
 {
-    partial class BanForm
+    partial class MenuForm
     {
         /// <summary>
         /// Required designer variable.
@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Quản lý bàn";
+            this.Text = "MenuForm";
         }
 
         #endregion
