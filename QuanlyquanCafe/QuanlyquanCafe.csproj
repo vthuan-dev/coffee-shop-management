@@ -125,6 +125,49 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="GUI\NhanVien\Ban\BanForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\NhanVien\Ban\BanForm.Designer.cs">
+      <DependentUpon>BanForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\NhanVien\Ban\Subforms\BookTableForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\NhanVien\Ban\Subforms\BookTableForm.Designer.cs">
+      <DependentUpon>BookTableForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\NhanVien\Ban\Subforms\CombineTableForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\NhanVien\Ban\Subforms\CombineTableForm.Designer.cs">
+      <DependentUpon>CombineTableForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\NhanVien\Ban\Subforms\MoveTableForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\NhanVien\Ban\Subforms\MoveTableForm.Designer.cs">
+      <DependentUpon>MoveTableForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\NhanVien\Ban\Subforms\PaymentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\NhanVien\Ban\Subforms\PaymentForm.Designer.cs">
+      <DependentUpon>PaymentForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\NhanVien\Ban\Subforms\SplitBill.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\NhanVien\Ban\Subforms\SplitBill.Designer.cs">
+      <DependentUpon>SplitBill.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\NhanVien\PhaChe\PhaCheForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\NhanVien\PhaChe\PhaCheForm.Designer.cs">
+      <DependentUpon>PhaCheForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
