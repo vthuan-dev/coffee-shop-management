@@ -28,6 +28,9 @@ namespace QuanlyquanCafe.GUI.NhanVien
                 Dock = DockStyle.Fill,
                 Font = new Font("Arial", 12)
             };
+            
+            // Thêm xử lý sự kiện khi chuyển tab
+            tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
             // Tab Bàn
             tabBan = new TabPage("Quản lý bàn");
@@ -35,7 +38,8 @@ namespace QuanlyquanCafe.GUI.NhanVien
             {
                 TopLevel = false,
                 FormBorderStyle = FormBorderStyle.None,
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                Visible = true  // Đảm bảo form hiển thị
             };
             tabBan.Controls.Add(banForm);
             banForm.Show();
@@ -71,6 +75,21 @@ namespace QuanlyquanCafe.GUI.NhanVien
 
             // Thêm TabControl vào form
             this.Controls.Add(tabControl);
+        }
+
+        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Kích hoạt form con trong tab được chọn
+            TabPage selectedTab = tabControl.SelectedTab;
+            foreach (Control ctrl in selectedTab.Controls)
+            {
+                if (ctrl is Form)
+                {
+                    ((Form)ctrl).Refresh();
+                    ((Form)ctrl).Activate();
+                    break;
+                }
+            }
         }
     }
 } 
