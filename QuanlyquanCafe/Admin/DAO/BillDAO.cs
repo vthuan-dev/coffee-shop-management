@@ -134,9 +134,9 @@ namespace QuanlyquanCafe.Admin.DAO
                        m.Price AS [Đơn giá], (m.Price * bi.Quantity) AS [Thành tiền]
                 FROM BillInfo bi
                 JOIN Menu m ON bi.MenuID = m.id
-                WHERE bi.BillID = " + billID;
+                WHERE bi.BillID = @billId";
                 
-            return DataProvider.Instance.ExecuteQuery(query);
+            return DataProvider.Instance.ExecuteQuery(query, new object[] { billID });
         }
 
         // Lấy thông tin bill để in
@@ -150,9 +150,9 @@ namespace QuanlyquanCafe.Admin.DAO
                 FROM Bill b
                 JOIN Users u ON b.UserID = u.uid
                 JOIN Facility t ON b.TableID = t.id
-                WHERE b.id = " + billID;
+                WHERE b.id = @billId";
                 
-            return DataProvider.Instance.ExecuteQuery(query);
+            return DataProvider.Instance.ExecuteQuery(query, new object[] { billID });
         }
 
         public DataTable GetListBillByDate(DateTime checkIn, DateTime checkOut)

@@ -8,6 +8,7 @@ using System.Data;
 using Microsoft.VisualBasic;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Drawing.Printing;
 
 namespace QuanlyquanCafe.GUI.NhanVien.Menu
 {
@@ -41,7 +42,7 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             this.btnUpdate.Click += BtnUpdate_Click;
             this.btnCheckout.Click += BtnCheckout_Click;
             this.btnSendToKitchen.Click += BtnSendToKitchen_Click;
-            this.btnPrint.Click += BtnPrint_Click;
+            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
             //this.btnRefresh.Click += BtnRefresh_Click;
             SetupTableView();
             
@@ -721,11 +722,8 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                     
                     MessageBox.Show("Đã thanh toán thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     
-                    // Hỏi người dùng có muốn in hóa đơn không
-                    if (MessageBox.Show("Bạn có muốn in hóa đơn không?", "In hóa đơn", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    {
-                        PrintBill(currentBillID.Value);
-                    }
+                    // Bằng:
+                    btnPrint_Click(this, EventArgs.Empty);
                     
                     // Làm mới giao diện
                     dgvOrderDetails.Rows.Clear();
@@ -745,61 +743,158 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             }
         }
 
-        private void BtnPrint_Click(object sender, EventArgs e)
+        private void btnPrint_Click(object sender, EventArgs e)
         {
             if (currentBillID == null)
             {
-                MessageBox.Show("Không có hóa đơn để in!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng chọn một hóa đơn để in!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             
-            PrintBill(currentBillID.Value);
-        }
-
-        private void PrintBill(int billID)
-        {
             try
             {
-                // Lấy thông tin bill
-                DataTable billInfo = BillDAO.Instance.GetBillInfo(billID);
+                // Sử dụng BillDAO thay vì truy vấn trực tiếp
+                DataTable billInfo = BillDAO.Instance.GetBillInfo(currentBillID.Value);
+                
                 if (billInfo.Rows.Count == 0)
                 {
                     MessageBox.Show("Không tìm thấy thông tin hóa đơn!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 
-                // Lấy chi tiết bill
-                DataTable billDetails = BillDAO.Instance.GetBillDetails(billID);
+                // Lấy chi tiết hóa đơn từ BillDAO
+                DataTable billDetails = BillDAO.Instance.GetBillDetails(currentBillID.Value);
                 
-                // Tạo form in hóa đơn hoặc sử dụng PrintDocument
-                // Ví dụ đơn giản: hiển thị thông tin trong MessageBox
-                string billText = "HÓA ĐƠN THANH TOÁN\n";
-                billText += "========================\n";
-                billText += $"Số hóa đơn: {billInfo.Rows[0]["id"]}\n";
-                billText += $"Nhân viên: {billInfo.Rows[0]["Nhân viên"]}\n";
-                billText += $"Bàn: {billInfo.Rows[0]["Bàn"]}\n";
-                billText += $"Ngày: {Convert.ToDateTime(billInfo.Rows[0]["Ngày"]).ToString("dd/MM/yyyy HH:mm")}\n";
-                billText += "========================\n";
-                billText += "Món        SL   Đơn giá   Thành tiền\n";
-                
-                foreach (DataRow row in billDetails.Rows)
+                // Khởi tạo và hiển thị PrintPreviewDialog
+                using (PrintDocument pd = new PrintDocument())
                 {
-                    billText += $"{row["Tên món"]}   {row["Số lượng"]}   {Convert.ToDecimal(row["Đơn giá"]):N0}   {Convert.ToDecimal(row["Thành tiền"]):N0}\n";
+                    pd.PrintPage += (s, ev) => PrintPage(s, ev, billInfo, billDetails);
+                    
+                    PrintPreviewDialog ppd = new PrintPreviewDialog();
+                    ppd.Document = pd;
+                    ppd.WindowState = FormWindowState.Maximized;
+                    
+                    if (ppd.ShowDialog() == DialogResult.OK)
+                    {
+                        pd.Print();
+                    }
                 }
-                
-                billText += "========================\n";
-                billText += $"Tổng tiền: {Convert.ToDecimal(billInfo.Rows[0]["Tổng tiền"]):N0} VNĐ\n";
-                billText += $"Giảm giá: {Convert.ToDecimal(billInfo.Rows[0]["Giảm giá"]):N0}%\n";
-                billText += $"Thanh toán: {Convert.ToDecimal(billInfo.Rows[0]["Thanh toán"]):N0} VNĐ\n";
-                billText += "========================\n";
-                billText += "Cảm ơn quý khách đã sử dụng dịch vụ!";
-                
-                // Trong một ứng dụng thực tế, bạn sẽ sử dụng PrintDocument để in ra máy in
-                MessageBox.Show(billText, "In hóa đơn", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi in hóa đơn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi khi in hóa đơn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine("Exception details: " + ex.ToString());
+            }
+        }
+
+        private void PrintPage(object sender, PrintPageEventArgs e, DataTable billInfo, DataTable billDetails)
+        {
+            try
+            {
+                // Lấy thông tin từ DataTable
+                DataRow billRow = billInfo.Rows[0];
+                
+                // Định nghĩa font và bút
+                Font titleFont = new Font("Arial", 16, FontStyle.Bold);
+                Font headerFont = new Font("Arial", 12, FontStyle.Bold);
+                Font normalFont = new Font("Arial", 10, FontStyle.Regular);
+                Font smallFont = new Font("Arial", 8, FontStyle.Regular);
+                Font thankYouFont = new Font("Arial", 10, FontStyle.Italic);
+                
+                Brush textBrush = Brushes.Black;
+                Pen linePen = new Pen(Color.Black, 1);
+                
+                // Định vị và kích thước
+                float yPos = 50;
+                int leftMargin = 50;
+                int width = e.PageBounds.Width - 100;
+                
+                // Vẽ tiêu đề
+                e.Graphics.DrawString("HÓA ĐƠN", titleFont, textBrush, leftMargin + width / 2 - 50, yPos);
+                yPos += 40;
+                
+                // Thông tin hóa đơn
+                e.Graphics.DrawString($"Số hóa đơn: {billRow["id"]}", normalFont, textBrush, leftMargin, yPos);
+                yPos += 20;
+                
+                // Thời gian
+                DateTime checkInDate = (DateTime)billRow["CheckInDate"];
+                e.Graphics.DrawString($"Thời gian: {checkInDate.ToString("dd/MM/yyyy HH:mm")}", normalFont, textBrush, leftMargin, yPos);
+                yPos += 20;
+                
+                // Nhân viên
+                e.Graphics.DrawString($"Nhân viên: {billRow["StaffName"]}", normalFont, textBrush, leftMargin, yPos);
+                yPos += 20;
+                
+                // Bàn
+                e.Graphics.DrawString($"Bàn: {billRow["TableName"]}", normalFont, textBrush, leftMargin, yPos);
+                yPos += 30;
+                
+                // Đường kẻ ngang
+                e.Graphics.DrawLine(linePen, leftMargin, yPos, leftMargin + width, yPos);
+                yPos += 10;
+                
+                // Tiêu đề chi tiết hóa đơn
+                e.Graphics.DrawString("Món", headerFont, textBrush, leftMargin, yPos);
+                e.Graphics.DrawString("SL", headerFont, textBrush, leftMargin + 200, yPos);
+                e.Graphics.DrawString("Đơn giá", headerFont, textBrush, leftMargin + 250, yPos);
+                e.Graphics.DrawString("Thành tiền", headerFont, textBrush, leftMargin + 350, yPos);
+                yPos += 20;
+                
+                // Đường kẻ ngang
+                e.Graphics.DrawLine(linePen, leftMargin, yPos, leftMargin + width, yPos);
+                yPos += 10;
+                
+                // Chi tiết các món
+                foreach (DataRow row in billDetails.Rows)
+                {
+                    e.Graphics.DrawString(row["Tên món"].ToString(), normalFont, textBrush, leftMargin, yPos);
+                    e.Graphics.DrawString(row["Số lượng"].ToString(), normalFont, textBrush, leftMargin + 200, yPos);
+                    e.Graphics.DrawString(Convert.ToDecimal(row["Đơn giá"]).ToString("N0"), normalFont, textBrush, leftMargin + 250, yPos);
+                    e.Graphics.DrawString(Convert.ToDecimal(row["Thành tiền"]).ToString("N0"), normalFont, textBrush, leftMargin + 350, yPos);
+                    yPos += 20;
+                }
+                
+                // Đường kẻ ngang
+                e.Graphics.DrawLine(linePen, leftMargin, yPos, leftMargin + width, yPos);
+                yPos += 20;
+                
+                // Tổng cộng
+                e.Graphics.DrawString("Tổng tiền:", headerFont, textBrush, leftMargin + 200, yPos);
+                e.Graphics.DrawString(Convert.ToDecimal(billRow["TotalAmount"]).ToString("N0") + " VNĐ", headerFont, textBrush, leftMargin + 350, yPos);
+                yPos += 20;
+                
+                // Giảm giá
+                e.Graphics.DrawString("Giảm giá:", normalFont, textBrush, leftMargin + 200, yPos);
+                e.Graphics.DrawString(Convert.ToDecimal(billRow["Discount"]).ToString("N0") + "%", normalFont, textBrush, leftMargin + 350, yPos);
+                yPos += 20;
+                
+                // Thanh toán
+                e.Graphics.DrawString("Thanh toán:", headerFont, textBrush, leftMargin + 200, yPos);
+                e.Graphics.DrawString(Convert.ToDecimal(billRow["FinalAmount"]).ToString("N0") + " VNĐ", headerFont, textBrush, leftMargin + 350, yPos);
+                yPos += 40;
+                
+                // Đường kẻ ngang
+                e.Graphics.DrawLine(linePen, leftMargin, yPos, leftMargin + width, yPos);
+                yPos += 20;
+                
+                // Lời cảm ơn
+                e.Graphics.DrawString("Cảm ơn quý khách đã sử dụng dịch vụ!", thankYouFont, textBrush, leftMargin + width / 2 - 120, yPos);
+                yPos += 20;
+                
+                // Thông tin liên hệ
+                e.Graphics.DrawString("Địa chỉ: 123 Đường ABC, Quận XYZ, TP.HCM", smallFont, textBrush, leftMargin, yPos);
+                yPos += 15;
+                e.Graphics.DrawString("Số điện thoại: (028) 1234 5678", smallFont, textBrush, leftMargin, yPos);
+                yPos += 15;
+                e.Graphics.DrawString("Website: www.quanlycafe.com", smallFont, textBrush, leftMargin, yPos);
+                
+                // Không còn trang khác để in
+                e.HasMorePages = false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi khi vẽ trang in: " + ex.ToString());
             }
         }
 
@@ -1371,6 +1466,52 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
         {
             // Tải lại danh sách hóa đơn đang hoạt động
             LoadActiveBills();
+        }
+
+        private void BtnCustomerLeft_Click(object sender, EventArgs e)
+        {
+            if (currentBillID == null)
+            {
+                MessageBox.Show("Chưa có hóa đơn nào được chọn!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Xác nhận việc khách hàng đã rời đi
+            DialogResult result = MessageBox.Show(
+                "Đánh dấu khách hàng đã rời đi? Hóa đơn sẽ vẫn giữ lại để xử lý sau.",
+                "Xác nhận",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                try
+                {
+                    // Cập nhật trạng thái CustomerLeft trong cơ sở dữ liệu
+                    string query = "UPDATE Bill SET CustomerLeft = 1 WHERE id = @billId";
+                    int rowsAffected = DataProvider.Instance.ExecuteNonQuery(query, new object[] { currentBillID });
+
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show("Đã đánh dấu khách hàng rời đi!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        
+                        // Cập nhật danh sách hóa đơn
+                        LoadActiveBills();
+                        
+                        // Reset trạng thái hiện tại
+                        currentBillID = null;
+                        LoadBillDetails(0); // Xóa chi tiết hóa đơn
+                    }
+                    else
+                    {
+                        MessageBox.Show("Không thể cập nhật trạng thái!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 
