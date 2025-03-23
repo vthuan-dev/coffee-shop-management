@@ -40,3 +40,4 @@ D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\Quanlyq
 D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.exe
 D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.pdb
 D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.GUI.NhanVien.Ban.BanForm.resources
+D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.GUI.NhanVien.Menu.MenuForm.resources

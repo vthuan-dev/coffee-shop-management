@@ -46,8 +46,18 @@
             this.button13 = new System.Windows.Forms.Button();
             this.button14 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
+            this.overviewPanel = new System.Windows.Forms.Panel();
+            this.lblOverviewTitle = new System.Windows.Forms.Label();
+            this.tableLayoutPanelInfo = new System.Windows.Forms.TableLayoutPanel();
+            this.lblTotalTables = new System.Windows.Forms.Label();
+            this.lblTablesInUse = new System.Windows.Forms.Label();
+            this.lblReservedTables = new System.Windows.Forms.Label();
+            this.lblEmptyTables = new System.Windows.Forms.Label();
+            this.lblRevenue = new System.Windows.Forms.Label();
             this.panelButtons.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.overviewPanel.SuspendLayout();
+            this.tableLayoutPanelInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelButtons
@@ -106,6 +116,7 @@
             // 
             // flowLayoutPanel1
             // 
+            this.flowLayoutPanel1.AutoScroll = true;
             this.flowLayoutPanel1.Controls.Add(this.button9);
             this.flowLayoutPanel1.Controls.Add(this.button1);
             this.flowLayoutPanel1.Controls.Add(this.button2);
@@ -118,12 +129,13 @@
             this.flowLayoutPanel1.Controls.Add(this.button13);
             this.flowLayoutPanel1.Controls.Add(this.button14);
             this.flowLayoutPanel1.Controls.Add(this.button15);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.Controls.Add(this.overviewPanel);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(136, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(10);
             this.flowLayoutPanel1.Size = new System.Drawing.Size(664, 450);
             this.flowLayoutPanel1.TabIndex = 1;
+            this.flowLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.flowLayoutPanel1_Paint);
             // 
             // button9
             // 
@@ -269,6 +281,97 @@
             this.button15.UseVisualStyleBackColor = true;
             this.button15.Click += new System.EventHandler(this.button9_Click);
             // 
+            // overviewPanel
+            // 
+            this.overviewPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.overviewPanel.Controls.Add(this.tableLayoutPanelInfo);
+            this.overviewPanel.Controls.Add(this.lblOverviewTitle);
+            this.overviewPanel.Font = new System.Drawing.Font("Microsoft YaHei UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.overviewPanel.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.overviewPanel.Location = new System.Drawing.Point(15, 443);
+            this.overviewPanel.Margin = new System.Windows.Forms.Padding(5);
+            this.overviewPanel.Name = "overviewPanel";
+            this.overviewPanel.Size = new System.Drawing.Size(629, 149);
+            this.overviewPanel.TabIndex = 1;
+            // 
+            // lblOverviewTitle
+            // 
+            this.lblOverviewTitle.AutoSize = true;
+            this.lblOverviewTitle.Location = new System.Drawing.Point(204, 9);
+            this.lblOverviewTitle.Name = "lblOverviewTitle";
+            this.lblOverviewTitle.Size = new System.Drawing.Size(177, 19);
+            this.lblOverviewTitle.TabIndex = 0;
+            this.lblOverviewTitle.Text = "THÔNG TIN TỔNG QUAN";
+            this.lblOverviewTitle.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.lblOverviewTitle.Click += new System.EventHandler(this.lblOverviewTitle_Click);
+            // 
+            // tableLayoutPanelInfo
+            // 
+            this.tableLayoutPanelInfo.ColumnCount = 4;
+            this.tableLayoutPanelInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 105F));
+            this.tableLayoutPanelInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 116F));
+            this.tableLayoutPanelInfo.Controls.Add(this.lblTotalTables, 0, 0);
+            this.tableLayoutPanelInfo.Controls.Add(this.lblTablesInUse, 1, 0);
+            this.tableLayoutPanelInfo.Controls.Add(this.lblReservedTables, 2, 0);
+            this.tableLayoutPanelInfo.Controls.Add(this.lblEmptyTables, 3, 0);
+            this.tableLayoutPanelInfo.Controls.Add(this.lblRevenue, 0, 1);
+            this.tableLayoutPanelInfo.Location = new System.Drawing.Point(3, 31);
+            this.tableLayoutPanelInfo.Name = "tableLayoutPanelInfo";
+            this.tableLayoutPanelInfo.RowCount = 2;
+            this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelInfo.Size = new System.Drawing.Size(530, 113);
+            this.tableLayoutPanelInfo.TabIndex = 1;
+            this.tableLayoutPanelInfo.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanelInfo_Paint);
+            // 
+            // lblTotalTables
+            // 
+            this.lblTotalTables.AutoSize = true;
+            this.lblTotalTables.Location = new System.Drawing.Point(3, 0);
+            this.lblTotalTables.Name = "lblTotalTables";
+            this.lblTotalTables.Size = new System.Drawing.Size(115, 19);
+            this.lblTotalTables.TabIndex = 0;
+            this.lblTotalTables.Text = "Tổng số bàn: 12";
+            this.lblTotalTables.Click += new System.EventHandler(this.lblTotalTables_Click);
+            // 
+            // lblTablesInUse
+            // 
+            this.lblTablesInUse.AutoSize = true;
+            this.lblTablesInUse.Location = new System.Drawing.Point(157, 0);
+            this.lblTablesInUse.Name = "lblTablesInUse";
+            this.lblTablesInUse.Size = new System.Drawing.Size(116, 19);
+            this.lblTablesInUse.TabIndex = 1;
+            this.lblTablesInUse.Text = "Đang sử dụng: 5";
+            // 
+            // lblReservedTables
+            // 
+            this.lblReservedTables.AutoSize = true;
+            this.lblReservedTables.Location = new System.Drawing.Point(311, 0);
+            this.lblReservedTables.Name = "lblReservedTables";
+            this.lblReservedTables.Size = new System.Drawing.Size(98, 19);
+            this.lblReservedTables.TabIndex = 2;
+            this.lblReservedTables.Text = "Bàn đã đặt: 2";
+            // 
+            // lblEmptyTables
+            // 
+            this.lblEmptyTables.AutoSize = true;
+            this.lblEmptyTables.Location = new System.Drawing.Point(416, 0);
+            this.lblEmptyTables.Name = "lblEmptyTables";
+            this.lblEmptyTables.Size = new System.Drawing.Size(91, 19);
+            this.lblEmptyTables.TabIndex = 3;
+            this.lblEmptyTables.Text = "Bàn trống: 5";
+            // 
+            // lblRevenue
+            // 
+            this.lblRevenue.AutoSize = true;
+            this.lblRevenue.Location = new System.Drawing.Point(3, 56);
+            this.lblRevenue.Name = "lblRevenue";
+            this.lblRevenue.Size = new System.Drawing.Size(133, 38);
+            this.lblRevenue.TabIndex = 4;
+            this.lblRevenue.Text = "Doanh thu ca hiện tại: 2,500,000 VND";
+            // 
             // BanForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -279,6 +382,10 @@
             this.Name = "BanForm";
             this.panelButtons.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
+            this.overviewPanel.ResumeLayout(false);
+            this.overviewPanel.PerformLayout();
+            this.tableLayoutPanelInfo.ResumeLayout(false);
+            this.tableLayoutPanelInfo.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -303,5 +410,13 @@
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.Button button14;
         private System.Windows.Forms.Button button15;
+        private System.Windows.Forms.Panel overviewPanel;
+        private System.Windows.Forms.Label lblOverviewTitle;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelInfo;
+        private System.Windows.Forms.Label lblTotalTables;
+        private System.Windows.Forms.Label lblTablesInUse;
+        private System.Windows.Forms.Label lblReservedTables;
+        private System.Windows.Forms.Label lblEmptyTables;
+        private System.Windows.Forms.Label lblRevenue;
     }
 }

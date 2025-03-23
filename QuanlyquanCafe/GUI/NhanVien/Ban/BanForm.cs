@@ -24,6 +24,12 @@ namespace QuanlyquanCafe.GUI.NhanVien.Ban
             
             // Tạo các button bàn
             CreateTableButtons();
+            
+            // Thiết lập panel từ Designer để có giao diện tối
+            ConfigureDesignerPanel();
+            
+            // Cập nhật thông tin ban đầu
+            UpdateOverviewInfo(12, 5, 2, 2500000);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -44,6 +50,12 @@ namespace QuanlyquanCafe.GUI.NhanVien.Ban
         private void panel1_Paint_1(object sender, PaintEventArgs e)
         {
             // Xử lý vẽ panel nếu cần
+        }
+
+        // Thêm phương thức xử lý sự kiện flowLayoutPanel1_Paint
+        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+            // Xử lý vẽ flowLayoutPanel nếu cần
         }
 
         // Thêm phương thức xử lý sự kiện button4_Click
@@ -201,6 +213,69 @@ namespace QuanlyquanCafe.GUI.NhanVien.Ban
                 MessageBox.Show("Bạn đã chọn " + clickedTable.Text);
                 // Thêm code xử lý khi chọn bàn
             }
+        }
+
+        private void ConfigureDesignerPanel()
+        {
+            // Điều chỉnh panel từ Designer
+            overviewPanel.BackColor = Color.FromArgb(35, 35, 35);
+            overviewPanel.ForeColor = Color.White;
+            overviewPanel.Tag = "OverviewPanel";
+            
+            // Định dạng tiêu đề
+            lblOverviewTitle.ForeColor = Color.White;
+            lblOverviewTitle.Font = new Font("Arial", 12, FontStyle.Bold);
+            lblOverviewTitle.Text = "THÔNG TIN TỔNG QUAN";
+            
+            // Định dạng các label trong tableLayoutPanelInfo
+            lblTotalTables.ForeColor = Color.LightBlue;
+            lblTablesInUse.ForeColor = Color.Orange;
+            lblReservedTables.ForeColor = Color.Yellow;
+            lblEmptyTables.ForeColor = Color.LightGreen;
+            lblRevenue.ForeColor = Color.LightPink;
+            
+            // Thêm viền dạng dấu gạch
+            overviewPanel.Paint += (sender, e) => {
+                using (Pen pen = new Pen(Color.LightGray, 1) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash })
+                {
+                    e.Graphics.DrawRectangle(pen, 5, 5, overviewPanel.Width - 11, overviewPanel.Height - 11);
+                }
+            };
+            
+            // Di chuyển panel từ flowLayoutPanel
+            if (flowLayoutPanel1.Controls.Contains(overviewPanel))
+            {
+                flowLayoutPanel1.Controls.Remove(overviewPanel);
+            }
+            
+            // Thêm lại vào flowLayoutPanel (để đảm bảo nó ở cuối)
+            flowLayoutPanel1.Controls.Add(overviewPanel);
+        }
+
+        // Thêm phương thức cập nhật thông tin
+        public void UpdateOverviewInfo(int totalTables, int tablesInUse, int reservedTables, decimal revenue)
+        {
+            // Sử dụng panel từ Designer thay vì tìm kiếm
+            lblTotalTables.Text = $"Tổng số bàn: {totalTables}";
+            lblTablesInUse.Text = $"Đang sử dụng: {tablesInUse}";
+            lblReservedTables.Text = $"Bàn đã đặt: {reservedTables}";
+            lblEmptyTables.Text = $"Bàn trống: {totalTables - tablesInUse - reservedTables}";
+            lblRevenue.Text = $"Doanh thu ca hiện tại: {revenue:N0} VND";
+        }
+
+        private void lblOverviewTitle_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanelInfo_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblTotalTables_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
