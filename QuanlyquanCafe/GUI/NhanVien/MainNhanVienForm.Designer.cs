@@ -11,6 +11,7 @@ namespace QuanlyquanCafe.GUI.NhanVien
                 components.Dispose();
             }
             base.Dispose(disposing);
+            
         }
 
         private void InitializeComponent()

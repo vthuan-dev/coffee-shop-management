@@ -12,11 +12,15 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
     {
         private int? currentTableID = null;
         private int? currentBillID = null;
-        private FlowLayoutPanel flpTables;
+        //private FlowLayoutPanel flpTables;
         private Button selectedTableButton = null;
+        private Dictionary<string, FlowLayoutPanel> floorPanels;
 
         public MenuForm()
         {
+            // Xóa dòng khởi tạo tabFloors vì đã được khởi tạo trong Designer
+            // tabFloors = new System.Windows.Forms.TabControl();
+            
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
             this.Dock = DockStyle.Fill;
@@ -30,6 +34,7 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             this.btnCheckout.Click += BtnCheckout_Click;
             this.btnSendToKitchen.Click += BtnSendToKitchen_Click;
             this.btnPrint.Click += BtnPrint_Click;
+            this.btnRefresh.Click += BtnRefresh_Click;
             SetupTableView();
         }
 
@@ -201,12 +206,31 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             }
         }
 
+        private void SetupTableView()
+        {
+            // Khởi tạo Dictionary floorPanels để dễ dàng quản lý các FlowLayoutPanel 
+            floorPanels = new Dictionary<string, FlowLayoutPanel>
+            {
+                { "Tầng 1", flpTables1 },
+                { "Tầng 2", flpTables2 },
+                { "Tầng 3", flpTables3 },
+                { "Tầng 4", flpTables4 }
+            };
+            
+            // Không khởi tạo tabFloors vì nó đã được tạo trong Designer
+            
+            // Thêm sự kiện cho txtBillSearch nếu chưa được thêm
+            this.txtBillSearch.Enter += txtBillSearch_Enter;
+            this.txtBillSearch.Leave += txtBillSearch_Leave;
+        }
+
         private void LoadTables()
         {
             try
             {
-                // Xóa tất cả các button bàn hiện tại
-                flpTables.Controls.Clear();
+                // Xóa tất cả các tab hiện tại
+                tabFloors.TabPages.Clear();
+                floorPanels.Clear();
                 
                 // Tạo ToolTip để hiển thị thông tin khi hover
                 ToolTip tableToolTip = new ToolTip();
@@ -216,16 +240,51 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                     SELECT f.id, f.Name, tf.Status, f.Location  
                     FROM Facility f
                     INNER JOIN TableFacility tf ON f.id = tf.id
-                    ORDER BY f.Name";
+                    ORDER BY f.Location, f.Name";
                 
                 DataTable data = DataProvider.Instance.ExecuteQuery(query);
                 
+                // Lấy danh sách các tầng duy nhất
+                HashSet<string> floors = new HashSet<string>();
+                foreach (DataRow row in data.Rows)
+                {
+                    string location = row["Location"].ToString();
+                    // Lấy tầng từ location (ví dụ: "Tầng 1", "Tầng 2")
+                    string floor = ExtractFloorFromLocation(location);
+                    floors.Add(floor);
+                }
+                
+                // Tạo các tab cho từng tầng
+                foreach (string floor in floors)
+                {
+                    // Tạo tab page mới
+                    TabPage tabPage = new TabPage(floor);
+                    
+                    // Tạo FlowLayoutPanel cho tầng
+                    FlowLayoutPanel flpTablesForFloor = new FlowLayoutPanel();
+                    flpTablesForFloor.Dock = DockStyle.Fill;
+                    flpTablesForFloor.AutoScroll = true;
+                    flpTablesForFloor.Padding = new Padding(5);
+                    flpTablesForFloor.Margin = new Padding(0);
+                    
+                    // Thêm FlowLayoutPanel vào tab
+                    tabPage.Controls.Add(flpTablesForFloor);
+                    
+                    // Thêm tab vào TabControl
+                    tabFloors.TabPages.Add(tabPage);
+                    
+                    // Lưu FlowLayoutPanel vào Dictionary
+                    floorPanels.Add(floor, flpTablesForFloor);
+                }
+                
+                // Thêm các button bàn vào FlowLayoutPanel tương ứng
                 foreach (DataRow row in data.Rows)
                 {
                     int tableId = Convert.ToInt32(row["id"]);
                     string tableName = row["Name"].ToString();
                     string status = row["Status"].ToString();
                     string location = row["Location"].ToString();
+                    string floor = ExtractFloorFromLocation(location);
                     
                     // Kiểm tra xem bàn có hóa đơn đang mở không
                     string billQuery = "SELECT id FROM Bill WHERE TableID = " + tableId + " AND Status = 0";
@@ -243,7 +302,7 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                         FlatStyle = FlatStyle.Flat
                     };
                     
-                    // Thiết lập màu sắc và trạng thái Enabled dựa vào trạng thái bàn
+                    // Thiết lập màu sắc và trạng thái giống code cũ
                     switch (status)
                     {
                         case "Trống":
@@ -284,14 +343,39 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                     // Thêm sự kiện click
                     btn.Click += Table_Click;
                     
-                    // Thêm button vào FlowLayoutPanel
-                    flpTables.Controls.Add(btn);
+                    // Thêm button vào FlowLayoutPanel của tầng tương ứng
+                    if (floorPanels.ContainsKey(floor))
+                    {
+                        floorPanels[floor].Controls.Add(btn);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải danh sách bàn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        // Hàm trích xuất thông tin tầng từ vị trí
+        private string ExtractFloorFromLocation(string location)
+        {
+            // Trong trường hợp đơn giản, nếu location có định dạng "Tầng X - ..."
+            if (location.StartsWith("Tầng"))
+            {
+                int dashIndex = location.IndexOf('-');
+                if (dashIndex > 0)
+                {
+                    return location.Substring(0, dashIndex).Trim();
+                }
+                else
+                {
+                    // Trường hợp không có dấu gạch ngang, lấy toàn bộ chuỗi
+                    return location.Trim();
+                }
+            }
+            
+            // Nếu không có định dạng rõ ràng, gán vào "Khác"
+            return "Khác";
         }
 
         // Xử lý sự kiện khi nhấn vào button bàn
@@ -750,26 +834,6 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             MessageBox.Show("Đã chuyển đơn hàng đến bếp!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void SetupTableView()
-        {
-            // Xóa cbxTable và thay thế bằng flpTables
-            pnlOrder.Controls.Remove(cbxTable);
-            
-            // Tạo FlowLayoutPanel để chứa các button bàn
-            flpTables = new System.Windows.Forms.FlowLayoutPanel();
-            flpTables.Location = new System.Drawing.Point(10, 30); // Vị trí ngay dưới label "Đơn hàng hiện tại:"
-            flpTables.Size = new System.Drawing.Size(940, 100);    // Kích thước đủ để hiển thị các button bàn
-            flpTables.BorderStyle = BorderStyle.FixedSingle;
-            flpTables.AutoScroll = true;
-            flpTables.Padding = new Padding(5);
-            flpTables.Margin = new Padding(0);
-            
-            pnlOrder.Controls.Add(flpTables);
-            
-            // Nạp danh sách bàn lên giao diện
-            LoadTables();
-        }
-
         private void lblTitle_Click(object sender, EventArgs e)
         {
 
@@ -853,12 +917,16 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                             // Cập nhật UI để hiển thị chi tiết hóa đơn
                             LoadBillDetails(billId);
                             
-                            // Cập nhật màu nút bàn đang chọn
-                            foreach (Button btn in flpTables.Controls)
+                            // Cập nhật để thêm chọn đúng tab tầng
+                            string tableLocation = ""; // Lấy thông tin location của bàn từ database
+                            string floor = ExtractFloorFromLocation(tableLocation);
+                            
+                            // Chọn tab tầng tương ứng
+                            for (int i = 0; i < tabFloors.TabPages.Count; i++)
                             {
-                                if ((int)btn.Tag == tableId)
+                                if (tabFloors.TabPages[i].Text == floor)
                                 {
-                                    btn.PerformClick();
+                                    tabFloors.SelectedIndex = i;
                                     break;
                                 }
                             }
@@ -946,6 +1014,43 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                 MessageBox.Show("Lỗi khi thanh toán: " + ex.Message, 
                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void txtBillSearch_Enter(object sender, EventArgs e)
+        {
+            if (txtBillSearch.Text == "Tìm kiếm hóa đơn...")
+            {
+                txtBillSearch.Text = "";
+                txtBillSearch.ForeColor = System.Drawing.SystemColors.WindowText;
+            }
+        }
+
+        private void txtBillSearch_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtBillSearch.Text))
+            {
+                txtBillSearch.Text = "Tìm kiếm hóa đơn...";
+                txtBillSearch.ForeColor = System.Drawing.SystemColors.GrayText;
+            }
+        }
+
+        private void BtnRefresh_Click(object sender, EventArgs e)
+        {
+            // Làm mới tất cả dữ liệu
+            LoadCategories();
+            LoadTables();
+            LoadAllMenuItems();
+            LoadActiveBills();
+            
+            // Xóa selection hiện tại nếu có
+            currentTableID = null;
+            currentBillID = null;
+            selectedTableButton = null;
+            lblTable.Text = "Bàn:";
+            dgvOrderDetails.Rows.Clear();
+            lblTotal.Text = "Tổng: 0 VNĐ";
+            
+            MessageBox.Show("Đã làm mới dữ liệu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
