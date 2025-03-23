@@ -36,10 +36,8 @@
             this.pnlButtons = new System.Windows.Forms.Panel();
             this.btnSendToKitchen = new System.Windows.Forms.Button();
             this.btnCheckout = new System.Windows.Forms.Button();
-            this.btnUpdate = new System.Windows.Forms.Button();
             this.btnDeleteItem = new System.Windows.Forms.Button();
             this.btnPrint = new System.Windows.Forms.Button();
-            this.btnRefresh = new System.Windows.Forms.Button();
             this.pnlOrderDetails = new System.Windows.Forms.Panel();
             this.dgvOrderDetails = new System.Windows.Forms.DataGridView();
             this.lblOrderDetails = new System.Windows.Forms.Label();
@@ -70,6 +68,7 @@
             this.dgvMenuItems = new System.Windows.Forms.DataGridView();
             this.lblMenuListTitle = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
+            this.btnUpdate = new System.Windows.Forms.Button();
             this.mainPanel.SuspendLayout();
             this.pnlActiveBills.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvActiveBills)).BeginInit();
@@ -167,7 +166,6 @@
             this.pnlButtons.Controls.Add(this.btnUpdate);
             this.pnlButtons.Controls.Add(this.btnDeleteItem);
             this.pnlButtons.Controls.Add(this.btnPrint);
-            this.pnlButtons.Controls.Add(this.btnRefresh);
             this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlButtons.Location = new System.Drawing.Point(10, 593);
             this.pnlButtons.Name = "pnlButtons";
@@ -190,13 +188,6 @@
             this.btnCheckout.TabIndex = 1;
             this.btnCheckout.Text = "Thanh toán";
             // 
-            // btnUpdate
-            // 
-            this.btnUpdate.Location = new System.Drawing.Point(0, 0);
-            this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(75, 23);
-            this.btnUpdate.TabIndex = 2;
-            // 
             // btnDeleteItem
             // 
             this.btnDeleteItem.Location = new System.Drawing.Point(140, 10);
@@ -207,19 +198,11 @@
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(530, 10);
+            this.btnPrint.Location = new System.Drawing.Point(526, 10);
             this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(120, 30);
+            this.btnPrint.Size = new System.Drawing.Size(136, 30);
             this.btnPrint.TabIndex = 4;
             this.btnPrint.Text = "In hóa đơn";
-            // 
-            // btnRefresh
-            // 
-            this.btnRefresh.Location = new System.Drawing.Point(10, 10);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(120, 30);
-            this.btnRefresh.TabIndex = 5;
-            this.btnRefresh.Text = "Làm mới";
             // 
             // pnlOrderDetails
             // 
@@ -546,6 +529,15 @@
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblTitle.Click += new System.EventHandler(this.lblTitle_Click);
             // 
+            // btnUpdate
+            // 
+            this.btnUpdate.Location = new System.Drawing.Point(38, 10);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(96, 30);
+            this.btnUpdate.TabIndex = 2;
+            this.btnUpdate.Text = "Làm mới";
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click_1);
+            // 
             // MenuForm
             // 
             this.ClientSize = new System.Drawing.Size(982, 653);
@@ -606,11 +598,9 @@
         private System.Windows.Forms.DataGridView dgvOrderDetails;
         private System.Windows.Forms.Panel pnlButtons;
         private System.Windows.Forms.Button btnDeleteItem;
-        private System.Windows.Forms.Button btnUpdate;
         private System.Windows.Forms.Button btnCheckout;
         private System.Windows.Forms.Button btnSendToKitchen;
         private System.Windows.Forms.Button btnPrint;
-        private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.Label lblTableDetails;
         private System.Windows.Forms.Panel pnlActiveBills;
         private System.Windows.Forms.DataGridView dgvActiveBills;
@@ -625,5 +615,6 @@
         private System.Windows.Forms.FlowLayoutPanel flpTables3;
         private System.Windows.Forms.FlowLayoutPanel flpTables4;
         private System.Windows.Forms.TextBox txtBillSearch;
+        private System.Windows.Forms.Button btnUpdate;
     }
 }
