@@ -181,30 +181,35 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
 
         private void LoadTables()
         {
-            // Xóa danh sách cũ
-            cbxTable.Items.Clear();
-            
-            // Thêm mục mặc định
-            cbxTable.Items.Add("-- Chọn bàn --");
-            
             try
             {
-                // TODO: Thay bằng code lấy danh sách bàn từ database
-                // Ví dụ: List<TableDTO> tables = TableDAO.Instance.GetTableList();
+                // Lấy danh sách bàn từ database - sử dụng FacilityCategoryID = 6
+                string query = @"
+                    SELECT f.id, f.Name 
+                    FROM Facility f
+                    WHERE f.FacilityCategoryID = 6";
                 
-                // Tạm thời thêm một số bàn để demo
-                for (int i = 1; i <= 10; i++)
-                {
-                    cbxTable.Items.Add($"Bàn {i}");
-                }
+                DataTable data = DataProvider.Instance.ExecuteQuery(query);
+                
+                // Thêm dòng "-- Chọn bàn --" vào đầu danh sách
+                DataRow defaultRow = data.NewRow();
+                defaultRow["id"] = -1;  // Giá trị không tồn tại trong database
+                defaultRow["Name"] = "-- Chọn bàn --";
+                data.Rows.InsertAt(defaultRow, 0);
+                
+                // Gán dữ liệu cho ComboBox
+                cbxTable.DataSource = data;
+                cbxTable.DisplayMember = "Name";
+                cbxTable.ValueMember = "id";
+                
+                // Reset giá trị
+                currentTableID = null;
+                currentBillID = null;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi tải danh sách bàn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi tải danh sách bàn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            
-            // Chọn mục mặc định
-            cbxTable.SelectedIndex = 0;
         }
 
         private void BtnSearch_Click(object sender, EventArgs e)
@@ -400,32 +405,41 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
 
         private void CbxTable_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbxTable.SelectedIndex <= 0)
+            try 
             {
-                currentTableID = null;
-                dgvOrderDetails.Rows.Clear();
-                lblTotal.Text = "Tổng: 0 VNĐ";
-                return;
+                if (cbxTable.SelectedIndex <= 0)
+                {
+                    currentTableID = null;
+                    return;
+                }
+                
+                // Thêm code kiểm tra và debug
+                string selectedValue = cbxTable.SelectedValue.ToString();
+                Console.WriteLine("Selected Table ID: " + selectedValue);
+                
+                // Chuyển đổi đúng kiểu dữ liệu
+                currentTableID = Convert.ToInt32(cbxTable.SelectedValue);
+                
+                // Kiểm tra xem bàn đã có hóa đơn chưa
+                DataTable result = DataProvider.Instance.ExecuteQuery(
+                    "SELECT id FROM Bill WHERE TableID = " + currentTableID + " AND Status = 0");
+                
+                if (result.Rows.Count > 0)
+                {
+                    currentBillID = Convert.ToInt32(result.Rows[0]["id"]);
+                    LoadBillDetails(currentBillID.Value);
+                }
+                else
+                {
+                    currentBillID = null;
+                    dgvOrderDetails.Rows.Clear();
+                    lblTotal.Text = "Tổng: 0 VNĐ";
+                }
             }
-
-            currentTableID = cbxTable.SelectedIndex; // Giả lập ID bàn
-            
-            // TODO: Thêm code để lấy đơn hàng hiện tại của bàn
-            // Ví dụ:
-            // currentBillID = BillDAO.Instance.GetUncheckBillIDByTableID(currentTableID.Value);
-            // if (currentBillID != null)
-            // {
-            //     LoadBillDetails();
-            // }
-            // else
-            // {
-            //     dgvOrderDetails.Rows.Clear();
-            //     lblTotal.Text = "Tổng: 0 VNĐ";
-            // }
-            
-            // Tạm thời xóa dữ liệu để demo
-            dgvOrderDetails.Rows.Clear();
-            lblTotal.Text = "Tổng: 0 VNĐ";
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi chọn bàn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void BtnDeleteItem_Click(object sender, EventArgs e)

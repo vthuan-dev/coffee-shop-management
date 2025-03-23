@@ -33,16 +33,27 @@ namespace QuanlyquanCafe.Admin.DAO
         {
             try
             {
-                string query = "INSERT INTO Bill (TableID, UserID, CheckInDate, Status, Discount, TotalPrice) " +
-                               "VALUES (@tableID, @userID, GETDATE(), 0, 0, 0); SELECT SCOPE_IDENTITY()";
+                // Kiểm tra xem TableID có tồn tại trong bảng Facility không
+                string checkQuery = "SELECT COUNT(*) FROM Facility WHERE id = " + tableID;
+                object checkResult = DataProvider.Instance.ExecuteScalar(checkQuery);
+                int count = Convert.ToInt32(checkResult);
                 
-                object result = DataProvider.Instance.ExecuteScalar(query, new object[] { tableID, userID });
+                if (count == 0)
+                {
+                    throw new Exception("ID bàn không tồn tại trong cơ sở dữ liệu!");
+                }
+                
+                // Tiếp tục với truy vấn tạo Bill
+                string query = "INSERT INTO Bill (TableID, UserID, CheckInDate, Status, Discount, TotalPrice) " +
+                                "VALUES (" + tableID + ", " + userID + ", GETDATE(), 0, 0, 0); SELECT SCOPE_IDENTITY()";
+                
+                object result = DataProvider.Instance.ExecuteScalar(query);
                 
                 if (result != null)
                 {
                     // Cập nhật trạng thái bàn thành "Có người"
-                    string updateTable = "UPDATE TableFacility SET Status = N'Có người' WHERE id = @tableID";
-                    DataProvider.Instance.ExecuteNonQuery(updateTable, new object[] { tableID });
+                    string updateTable = "UPDATE TableFacility SET Status = N'Có người' WHERE id = " + tableID;
+                    DataProvider.Instance.ExecuteNonQuery(updateTable);
                     
                     return Convert.ToInt32(result);
                 }
@@ -71,34 +82,27 @@ namespace QuanlyquanCafe.Admin.DAO
         }
 
         // Thanh toán bill
-        public bool CheckOut(int billID, decimal discount = 0)
+        public bool CheckOut(int billID, float discount = 0)
         {
             try
             {
-                // Cập nhật tổng tiền
-                UpdateTotalPrice(billID);
+                // Cập nhật hóa đơn thành đã thanh toán
+                string updateBill = "UPDATE Bill SET Status = 1, Discount = " + discount + " WHERE id = " + billID;
+                int billResult = DataProvider.Instance.ExecuteNonQuery(updateBill);
+
+                // Lấy ID bàn từ bill để cập nhật trạng thái bàn
+                string getTableID = "SELECT TableID FROM Bill WHERE id = " + billID;
+                object tableIDObj = DataProvider.Instance.ExecuteScalar(getTableID);
                 
-                // Cập nhật trạng thái đã thanh toán và giảm giá
-                string query = "UPDATE Bill SET Status = 1, Discount = @discount WHERE id = @billID";
-                int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { discount, billID });
-                
-                if (result > 0)
+                if (tableIDObj != null && tableIDObj != DBNull.Value)
                 {
-                    // Lấy tableID từ bill
-                    string getTableQuery = "SELECT TableID FROM Bill WHERE id = @billID";
-                    object tableIDObj = DataProvider.Instance.ExecuteScalar(getTableQuery, new object[] { billID });
-                    
-                    if (tableIDObj != null)
-                    {
-                        int tableID = Convert.ToInt32(tableIDObj);
-                        
-                        // Cập nhật trạng thái bàn thành "Trống"
-                        string updateTableQuery = "UPDATE TableFacility SET Status = N'Trống' WHERE id = @tableID";
-                        DataProvider.Instance.ExecuteNonQuery(updateTableQuery, new object[] { tableID });
-                    }
+                    int tableID = Convert.ToInt32(tableIDObj);
+                    // Cập nhật trạng thái bàn thành "Trống"
+                    string updateTable = "UPDATE TableFacility SET Status = N'Trống' WHERE id = " + tableID;
+                    DataProvider.Instance.ExecuteNonQuery(updateTable);
                 }
                 
-                return result > 0;
+                return billResult > 0;
             }
             catch (Exception ex)
             {
@@ -115,11 +119,11 @@ namespace QuanlyquanCafe.Admin.DAO
                     SELECT SUM(m.Price * bi.Quantity) 
                     FROM BillInfo bi 
                     JOIN Menu m ON bi.MenuID = m.id 
-                    WHERE bi.BillID = @billID
+                    WHERE bi.BillID = " + billID + @"
                 )
-                WHERE id = @billID";
+                WHERE id = " + billID;
                 
-            DataProvider.Instance.ExecuteNonQuery(query, new object[] { billID });
+            DataProvider.Instance.ExecuteNonQuery(query);
         }
 
         // Lấy chi tiết bill để in
@@ -130,9 +134,9 @@ namespace QuanlyquanCafe.Admin.DAO
                        m.Price AS [Đơn giá], (m.Price * bi.Quantity) AS [Thành tiền]
                 FROM BillInfo bi
                 JOIN Menu m ON bi.MenuID = m.id
-                WHERE bi.BillID = @billID";
+                WHERE bi.BillID = " + billID;
                 
-            return DataProvider.Instance.ExecuteQuery(query, new object[] { billID });
+            return DataProvider.Instance.ExecuteQuery(query);
         }
 
         // Lấy thông tin bill để in
@@ -146,9 +150,9 @@ namespace QuanlyquanCafe.Admin.DAO
                 FROM Bill b
                 JOIN Users u ON b.UserID = u.uid
                 JOIN Facility t ON b.TableID = t.id
-                WHERE b.id = @billID";
+                WHERE b.id = " + billID;
                 
-            return DataProvider.Instance.ExecuteQuery(query, new object[] { billID });
+            return DataProvider.Instance.ExecuteQuery(query);
         }
 
         public DataTable GetListBillByDate(DateTime checkIn, DateTime checkOut)

@@ -30,8 +30,8 @@ namespace QuanlyquanCafe.Admin.DAO
             try
             {
                 // Kiểm tra xem món đã có trong bill chưa
-                string checkQuery = "SELECT id, Quantity FROM BillInfo WHERE BillID = @billID AND MenuID = @menuID";
-                DataTable data = DataProvider.Instance.ExecuteQuery(checkQuery, new object[] { billID, menuID });
+                string checkQuery = "SELECT id, Quantity FROM BillInfo WHERE BillID = " + billID + " AND MenuID = " + menuID;
+                DataTable data = DataProvider.Instance.ExecuteQuery(checkQuery);
                 
                 if (data.Rows.Count > 0)
                 {
@@ -48,15 +48,15 @@ namespace QuanlyquanCafe.Admin.DAO
                     else
                     {
                         // Cập nhật số lượng
-                        string updateQuery = "UPDATE BillInfo SET Quantity = @quantity WHERE id = @id";
-                        return DataProvider.Instance.ExecuteNonQuery(updateQuery, new object[] { newQuantity, id }) > 0;
+                        string updateQuery = "UPDATE BillInfo SET Quantity = " + newQuantity + " WHERE id = " + id;
+                        return DataProvider.Instance.ExecuteNonQuery(updateQuery) > 0;
                     }
                 }
                 else if (quantity > 0)
                 {
                     // Nếu món chưa có trong bill, thêm mới
-                    string insertQuery = "INSERT INTO BillInfo (BillID, MenuID, Quantity) VALUES (@billID, @menuID, @quantity)";
-                    return DataProvider.Instance.ExecuteNonQuery(insertQuery, new object[] { billID, menuID, quantity }) > 0;
+                    string insertQuery = "INSERT INTO BillInfo (BillID, MenuID, Quantity) VALUES (" + billID + ", " + menuID + ", " + quantity + ")";
+                    return DataProvider.Instance.ExecuteNonQuery(insertQuery) > 0;
                 }
                 
                 return false;
@@ -70,22 +70,22 @@ namespace QuanlyquanCafe.Admin.DAO
         // Xóa một món trong bill
         public bool DeleteBillInfo(int id)
         {
-            string query = "DELETE FROM BillInfo WHERE id = @id";
-            return DataProvider.Instance.ExecuteNonQuery(query, new object[] { id }) > 0;
+            string query = "DELETE FROM BillInfo WHERE id = " + id;
+            return DataProvider.Instance.ExecuteNonQuery(query) > 0;
         }
 
         // Xóa tất cả món trong bill
         public bool DeleteBillInfoByBillID(int billID)
         {
-            string query = "DELETE FROM BillInfo WHERE BillID = @billID";
-            return DataProvider.Instance.ExecuteNonQuery(query, new object[] { billID }) > 0;
+            string query = "DELETE FROM BillInfo WHERE BillID = " + billID;
+            return DataProvider.Instance.ExecuteNonQuery(query) > 0;
         }
 
         // Xóa món trong tất cả bill (khi xóa món khỏi menu)
         public bool DeleteBillInfoByMenuID(int menuID)
         {
-            string query = "DELETE FROM BillInfo WHERE MenuID = @menuID";
-            return DataProvider.Instance.ExecuteNonQuery(query, new object[] { menuID }) > 0;
+            string query = "DELETE FROM BillInfo WHERE MenuID = " + menuID;
+            return DataProvider.Instance.ExecuteNonQuery(query) > 0;
         }
 
         // Lấy danh sách món trong bill
@@ -96,9 +96,9 @@ namespace QuanlyquanCafe.Admin.DAO
                        m.Price AS [Giá], (m.Price * bi.Quantity) AS [Thành tiền]
                 FROM BillInfo bi
                 JOIN Menu m ON bi.MenuID = m.id
-                WHERE bi.BillID = @billID";
+                WHERE bi.BillID = " + billID;
                 
-            return DataProvider.Instance.ExecuteQuery(query, new object[] { billID });
+            return DataProvider.Instance.ExecuteQuery(query);
         }
     }
 }
