@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using QuanlyquanCafe.GUI.NhanVien.Ban;
 using QuanlyquanCafe.GUI.NhanVien.Menu;
 using QuanlyquanCafe.GUI.NhanVien.PhaChe;
+// using QuanlyquanCafe.GUI.NhanVien.DonHang;
 
 namespace QuanlyquanCafe.GUI.NhanVien
 {
@@ -13,6 +14,7 @@ namespace QuanlyquanCafe.GUI.NhanVien
         private TabPage tabBan;
         private TabPage tabMenu;
         private TabPage tabPhaChe;
+        // private TabPage tabDonHang;
 
         public MainNhanVienForm()
         {
@@ -66,11 +68,24 @@ namespace QuanlyquanCafe.GUI.NhanVien
             tabPhaChe.Controls.Add(phaCheForm);
             phaCheForm.Show();
 
+            // // Tab Danh sách đơn hàng
+            // tabDonHang = new TabPage("Đơn hàng");
+            // var donHangForm = new DonHangListForm
+            // {
+            //     TopLevel = false,
+            //     FormBorderStyle = FormBorderStyle.None,
+            //     Dock = DockStyle.Fill,
+            //     Visible = true
+            // };
+            // tabDonHang.Controls.Add(donHangForm);
+            // donHangForm.Show();
+
             // Thêm các tab vào TabControl
             tabControl.TabPages.AddRange(new TabPage[] {
                 tabBan,
                 tabMenu,
-                tabPhaChe
+                tabPhaChe,
+                // tabDonHang
             });
 
             // Thêm TabControl vào form

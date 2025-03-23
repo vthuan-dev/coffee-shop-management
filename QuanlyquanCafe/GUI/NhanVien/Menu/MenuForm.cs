@@ -38,11 +38,13 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             // Đầu tiên, thiết lập cấu trúc bảng
             SetupMenuTable();
             SetupOrderDetailsTable();
+            SetupActiveBillsTable();
             
             // Sau đó mới tải dữ liệu
             LoadCategories();
             LoadTables();
             LoadAllMenuItems();
+            LoadActiveBills();
         }
 
         private void SetupMenuTable()
@@ -91,6 +93,24 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             dgvOrderDetails.Columns[3].Width = 100;
             dgvOrderDetails.Columns[4].Name = "Thành tiền";
             dgvOrderDetails.Columns[4].Width = 150;
+        }
+
+        private void SetupActiveBillsTable()
+        {
+            // Xóa tất cả cột hiện tại nếu có
+            dgvActiveBills.Columns.Clear();
+            
+            // Thêm các cột cần thiết
+            dgvActiveBills.Columns.Add("ID", "Mã hóa đơn");
+            dgvActiveBills.Columns.Add("TableName", "Bàn");
+            dgvActiveBills.Columns.Add("CheckInTime", "Thời gian vào");
+            dgvActiveBills.Columns.Add("TotalItems", "Số món");
+            dgvActiveBills.Columns.Add("TotalAmount", "Tổng tiền");
+            dgvActiveBills.Columns.Add("Status", "Trạng thái");
+            dgvActiveBills.Columns.Add("Staff", "Nhân viên");
+            
+            // Thiết lập sự kiện khi nhấp đúp vào hóa đơn
+            dgvActiveBills.CellDoubleClick += DgvActiveBills_CellDoubleClick;
         }
 
         private void LoadCategories()
@@ -279,6 +299,24 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
         {
             Button clickedButton = sender as Button;
             int tableId = Convert.ToInt32(clickedButton.Tag);
+            
+            // Kiểm tra trạng thái bàn
+            string statusQuery = "SELECT Status FROM TableFacility WHERE id = " + tableId;
+            object statusObj = DataProvider.Instance.ExecuteScalar(statusQuery);
+            
+            if (statusObj != null && statusObj.ToString() == "Có người")
+            {
+                // Kiểm tra xem có hóa đơn đang mở không
+                string billQuery = "SELECT id FROM Bill WHERE TableID = " + tableId + " AND Status = 0";
+                object billObj = DataProvider.Instance.ExecuteScalar(billQuery);
+                
+                if (billObj == null)
+                {
+                    MessageBox.Show("Bàn này đã có khách nhưng chưa có hóa đơn. Không thể tạo đơn hàng mới.", 
+                                   "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
             
             // Đổi màu của button trước đó về màu bình thường
             if (selectedTableButton != null)
@@ -631,6 +669,9 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                     
                     // Cập nhật lại danh sách bàn
                     LoadTables();
+                    
+                    // Cập nhật lại danh sách hóa đơn đang hoạt động
+                    LoadActiveBills();
                 }
                 catch (Exception ex)
                 {
@@ -738,6 +779,173 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
         private void lblMenuListTitle_Click(object sender, EventArgs e)
         {
             // Để trống - chỉ để tránh lỗi
+        }
+
+        private void LoadActiveBills()
+        {
+            try
+            {
+                // Xóa dữ liệu cũ
+                dgvActiveBills.Rows.Clear();
+
+                // Truy vấn để lấy danh sách hóa đơn đang hoạt động
+                string query = @"
+                    SELECT b.id, f.Name AS TableName, b.CheckInDate, 
+                           (SELECT COUNT(*) FROM BillInfo WHERE BillID = b.id) AS TotalItems,
+                           b.TotalPrice, 
+                           CASE WHEN b.Status = 0 THEN N'Đang phục vụ' ELSE N'Đã thanh toán' END AS Status,
+                           u.FullName AS StaffName
+                    FROM Bill b
+                    JOIN Facility f ON b.TableID = f.id
+                    JOIN Users u ON b.UserID = u.uid
+                    WHERE b.Status = 0
+                    ORDER BY b.CheckInDate DESC";
+
+                DataTable data = DataProvider.Instance.ExecuteQuery(query);
+
+                // Thêm dữ liệu vào DataGridView
+                foreach (DataRow row in data.Rows)
+                {
+                    int rowIndex = dgvActiveBills.Rows.Add();
+                    DataGridViewRow gridRow = dgvActiveBills.Rows[rowIndex];
+
+                    gridRow.Cells["ID"].Value = row["id"];
+                    gridRow.Cells["TableName"].Value = row["TableName"];
+                    gridRow.Cells["CheckInTime"].Value = ((DateTime)row["CheckInDate"]).ToString("dd/MM/yyyy HH:mm");
+                    gridRow.Cells["TotalItems"].Value = row["TotalItems"];
+                    gridRow.Cells["TotalAmount"].Value = string.Format("{0:N0} VNĐ", row["TotalPrice"]);
+                    gridRow.Cells["Status"].Value = row["Status"];
+                    gridRow.Cells["Staff"].Value = row["StaffName"];
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải danh sách hóa đơn: " + ex.Message, 
+                               "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void DgvActiveBills_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                try
+                {
+                    int billId = Convert.ToInt32(dgvActiveBills.Rows[e.RowIndex].Cells["ID"].Value);
+                    string tableName = dgvActiveBills.Rows[e.RowIndex].Cells["TableName"].Value.ToString();
+                    
+                    // Xác nhận xem người dùng muốn thanh toán hay xem chi tiết
+                    if (MessageBox.Show($"Bạn muốn xem chi tiết hóa đơn #{billId} - Bàn: {tableName}?", 
+                                      "Tùy chọn", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        // Tìm tableID từ tableName
+                        string tableQuery = "SELECT id FROM Facility WHERE Name = @tableName";
+                        object tableIdObj = DataProvider.Instance.ExecuteScalar(tableQuery, new object[] { tableName });
+                        
+                        if (tableIdObj != null)
+                        {
+                            int tableId = Convert.ToInt32(tableIdObj);
+                            
+                            // Đặt bàn hiện tại và billID
+                            currentTableID = tableId;
+                            currentBillID = billId;
+                            
+                            // Cập nhật UI để hiển thị chi tiết hóa đơn
+                            LoadBillDetails(billId);
+                            
+                            // Cập nhật màu nút bàn đang chọn
+                            foreach (Button btn in flpTables.Controls)
+                            {
+                                if ((int)btn.Tag == tableId)
+                                {
+                                    btn.PerformClick();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi xử lý hóa đơn: " + ex.Message, 
+                                   "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void FilterActiveBills(string keyword)
+        {
+            try
+            {
+                foreach (DataGridViewRow row in dgvActiveBills.Rows)
+                {
+                    bool visible = false;
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        if (cell.Value != null && cell.Value.ToString().ToLower().Contains(keyword.ToLower()))
+                        {
+                            visible = true;
+                            break;
+                        }
+                    }
+                    row.Visible = visible;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lọc hóa đơn: " + ex.Message, 
+                               "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CheckoutBillFromList(int billId)
+        {
+            try
+            {
+                string tableName = string.Empty;
+                
+                // Tìm tên bàn
+                foreach (DataGridViewRow row in dgvActiveBills.Rows)
+                {
+                    if (Convert.ToInt32(row.Cells["ID"].Value) == billId)
+                    {
+                        tableName = row.Cells["TableName"].Value.ToString();
+                        break;
+                    }
+                }
+                
+                if (MessageBox.Show($"Xác nhận thanh toán hóa đơn #{billId} - Bàn: {tableName}?", 
+                                  "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    // Thanh toán hóa đơn
+                    if (BillDAO.Instance.CheckOut(billId))
+                    {
+                        MessageBox.Show("Thanh toán thành công!", "Thông báo");
+                        
+                        // Làm mới danh sách
+                        LoadActiveBills();
+                        LoadTables();
+                        
+                        // Nếu đang xem chi tiết hóa đơn này thì làm mới
+                        if (currentBillID == billId)
+                        {
+                            dgvOrderDetails.Rows.Clear();
+                            lblTotal.Text = "Tổng: 0 VNĐ";
+                            currentBillID = null;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Không thể thanh toán hóa đơn!", 
+                                       "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi thanh toán: " + ex.Message, 
+                               "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.mainPanel = new System.Windows.Forms.Panel();
+            this.pnlActiveBills = new System.Windows.Forms.Panel();
+            this.dgvActiveBills = new System.Windows.Forms.DataGridView();
+            this.lblActiveBills = new System.Windows.Forms.Label();
             this.pnlButtons = new System.Windows.Forms.Panel();
             this.btnSendToKitchen = new System.Windows.Forms.Button();
             this.btnCheckout = new System.Windows.Forms.Button();
@@ -38,6 +41,7 @@
             this.pnlOrderDetails = new System.Windows.Forms.Panel();
             this.dgvOrderDetails = new System.Windows.Forms.DataGridView();
             this.lblOrderDetails = new System.Windows.Forms.Label();
+            this.lblTableDetails = new System.Windows.Forms.Label();
             this.pnlOrder = new System.Windows.Forms.Panel();
             this.lblTotal = new System.Windows.Forms.Label();
             this.cbxTable = new System.Windows.Forms.ComboBox();
@@ -55,7 +59,6 @@
             this.dgvMenuItems = new System.Windows.Forms.DataGridView();
             this.lblMenuListTitle = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.lblTableDetails = new System.Windows.Forms.Label();
             this.mainPanel.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.pnlOrderDetails.SuspendLayout();
@@ -73,6 +76,7 @@
             // 
             // mainPanel
             // 
+            this.mainPanel.Controls.Add(this.pnlActiveBills);
             this.mainPanel.Controls.Add(this.pnlButtons);
             this.mainPanel.Controls.Add(this.pnlOrderDetails);
             this.mainPanel.Controls.Add(this.pnlOrder);
@@ -85,6 +89,44 @@
             this.mainPanel.Padding = new System.Windows.Forms.Padding(10);
             this.mainPanel.Size = new System.Drawing.Size(982, 653);
             this.mainPanel.TabIndex = 0;
+            // 
+            // pnlActiveBills
+            // 
+            this.pnlActiveBills.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlActiveBills.Controls.Add(this.dgvActiveBills);
+            this.pnlActiveBills.Controls.Add(this.lblActiveBills);
+            this.pnlActiveBills.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlActiveBills.Location = new System.Drawing.Point(10, 400);
+            this.pnlActiveBills.Name = "pnlActiveBills";
+            this.pnlActiveBills.Size = new System.Drawing.Size(962, 200);
+            this.pnlActiveBills.TabIndex = 5;
+            // 
+            // dgvActiveBills
+            // 
+            this.dgvActiveBills.AllowUserToAddRows = false;
+            this.dgvActiveBills.AllowUserToDeleteRows = false;
+            this.dgvActiveBills.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvActiveBills.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvActiveBills.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvActiveBills.Location = new System.Drawing.Point(0, 30);
+            this.dgvActiveBills.Name = "dgvActiveBills";
+            this.dgvActiveBills.ReadOnly = true;
+            this.dgvActiveBills.RowHeadersVisible = false;
+            this.dgvActiveBills.RowHeadersWidth = 51;
+            this.dgvActiveBills.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvActiveBills.Size = new System.Drawing.Size(960, 168);
+            this.dgvActiveBills.TabIndex = 0;
+            // 
+            // lblActiveBills
+            // 
+            this.lblActiveBills.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblActiveBills.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
+            this.lblActiveBills.Location = new System.Drawing.Point(0, 0);
+            this.lblActiveBills.Name = "lblActiveBills";
+            this.lblActiveBills.Size = new System.Drawing.Size(960, 30);
+            this.lblActiveBills.TabIndex = 1;
+            this.lblActiveBills.Text = "Danh sách hóa đơn đang hoạt động";
+            this.lblActiveBills.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // pnlButtons
             // 
@@ -157,13 +199,13 @@
             this.dgvOrderDetails.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvOrderDetails.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvOrderDetails.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvOrderDetails.Location = new System.Drawing.Point(0, 50);
+            this.dgvOrderDetails.Location = new System.Drawing.Point(0, 30);
             this.dgvOrderDetails.Name = "dgvOrderDetails";
             this.dgvOrderDetails.ReadOnly = true;
             this.dgvOrderDetails.RowHeadersVisible = false;
             this.dgvOrderDetails.RowHeadersWidth = 51;
             this.dgvOrderDetails.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvOrderDetails.Size = new System.Drawing.Size(960, 148);
+            this.dgvOrderDetails.Size = new System.Drawing.Size(960, 168);
             this.dgvOrderDetails.TabIndex = 0;
             // 
             // lblOrderDetails
@@ -183,7 +225,7 @@
             this.lblTableDetails.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
             this.lblTableDetails.Location = new System.Drawing.Point(10, 30);
             this.lblTableDetails.Name = "lblTableDetails";
-            this.lblTableDetails.Size = new System.Drawing.Size(150, 20);
+            this.lblTableDetails.Size = new System.Drawing.Size(129, 19);
             this.lblTableDetails.TabIndex = 2;
             this.lblTableDetails.Text = "Thông tin bàn: ";
             // 
@@ -377,10 +419,10 @@
             this.ClientSize = new System.Drawing.Size(982, 653);
             this.Controls.Add(this.mainPanel);
             this.Name = "MenuForm";
-            this.Text = "Menu";
             this.mainPanel.ResumeLayout(false);
             this.pnlButtons.ResumeLayout(false);
             this.pnlOrderDetails.ResumeLayout(false);
+            this.pnlOrderDetails.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOrderDetails)).EndInit();
             this.pnlOrder.ResumeLayout(false);
             this.pnlOrder.PerformLayout();
@@ -427,5 +469,8 @@
         private System.Windows.Forms.Button btnSendToKitchen;
         private System.Windows.Forms.Button btnPrint;
         private System.Windows.Forms.Label lblTableDetails;
+        private System.Windows.Forms.Panel pnlActiveBills;
+        private System.Windows.Forms.DataGridView dgvActiveBills;
+        private System.Windows.Forms.Label lblActiveBills;
     }
 }
