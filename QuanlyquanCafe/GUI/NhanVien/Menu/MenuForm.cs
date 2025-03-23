@@ -1339,7 +1339,10 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                         
                         // Cập nhật hiển thị
                         LoadBillDetails(currentBillID.Value);
-                        RefreshTableStatus();
+                        
+                        // Cập nhật trạng thái bàn một cách chính xác
+                        UpdateTableStatus(currentTableID.Value, "Có người");
+                        LoadTables(); // Tải lại danh sách bàn để cập nhật UI
                         
                         MessageBox.Show("Đã thêm các món vào hóa đơn hiện tại!", "Thành công", 
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1358,9 +1361,7 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                         currentBillID = Convert.ToInt32(result);
                         
                         // Cập nhật trạng thái bàn
-                        string updateTableQuery = string.Format(
-                            "UPDATE TableFacility SET Status = N'Có người' WHERE id = {0}", currentTableID);
-                        DataProvider.Instance.ExecuteNonQuery(updateTableQuery);
+                        UpdateTableStatus(currentTableID.Value, "Có người");
                         
                         // Thêm từng món vào hóa đơn mới
                         foreach (TempOrderItem item in tempOrderItems)
@@ -1377,7 +1378,7 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                         
                         // Cập nhật hiển thị
                         LoadBillDetails(currentBillID.Value);
-                        RefreshTableStatus();
+                        LoadTables(); // Tải lại danh sách bàn để cập nhật UI
                         
                         MessageBox.Show("Đã tạo hóa đơn mới thành công!", "Thành công", 
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1567,6 +1568,25 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                 {
                     MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        // Thêm phương thức mới để cập nhật trạng thái bàn
+        private void UpdateTableStatus(int tableId, string status)
+        {
+            try {
+                // Cập nhật trực tiếp vào cơ sở dữ liệu
+                string updateQuery = string.Format(
+                    "UPDATE TableFacility SET Status = N'{0}' WHERE id = {1}", 
+                    status, tableId);
+                int result = DataProvider.Instance.ExecuteNonQuery(updateQuery);
+                
+                if (result <= 0) {
+                    Console.WriteLine("Failed to update table status. Table ID: " + tableId);
+                }
+            }
+            catch (Exception ex) {
+                Console.WriteLine("Error updating table status: " + ex.Message);
             }
         }
     }
