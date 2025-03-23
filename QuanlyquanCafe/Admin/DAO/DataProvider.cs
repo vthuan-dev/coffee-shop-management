@@ -103,6 +103,35 @@ namespace QuanlyquanCafe.Admin.DAO
             return data;
         }
 
+        public DataTable ExecuteQueryWithParameters(string query, object[] parameters = null)
+        {
+            DataTable data = new DataTable();
+
+            using (SqlConnection connection = new SqlConnection(connStr))
+            {
+                connection.Open();
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                if (parameters != null)
+                {
+                    foreach (object parameter in parameters)
+                    {
+                        if (parameter is SqlParameter sqlParam)
+                        {
+                            command.Parameters.Add(sqlParam);
+                        }
+                    }
+                }
+
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                adapter.Fill(data);
+
+                connection.Close();
+            }
+
+            return data;
+        }
 
     }
 }
