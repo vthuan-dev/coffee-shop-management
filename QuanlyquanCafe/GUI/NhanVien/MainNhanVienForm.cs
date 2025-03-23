@@ -91,5 +91,10 @@ namespace QuanlyquanCafe.GUI.NhanVien
                 }
             }
         }
+
+        private void MainNhanVienForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 } 

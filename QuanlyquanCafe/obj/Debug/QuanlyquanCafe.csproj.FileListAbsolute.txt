@@ -33,11 +33,12 @@ D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\Quanlyq
 D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.Admin.fAdmin.resources
 D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.Form1.resources
 D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.Auth.sign_up.resources
+D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.GUI.NhanVien.Ban.BanForm.resources
+D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.GUI.NhanVien.MainNhanVienForm.resources
+D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.GUI.NhanVien.Menu.MenuForm.resources
 D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.Properties.Resources.resources
 D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.csproj.GenerateResource.cache
 D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.csproj.CoreCompileInputs.cache
 D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\Quanlyqu.72C92D5D.Up2Date
 D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.exe
 D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.pdb
-D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.GUI.NhanVien.Ban.BanForm.resources
-D:\learning\.net\project\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.GUI.NhanVien.Menu.MenuForm.resources
