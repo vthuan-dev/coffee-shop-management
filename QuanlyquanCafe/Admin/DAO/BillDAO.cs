@@ -155,10 +155,10 @@ namespace QuanlyquanCafe.Admin.DAO
             return DataProvider.Instance.ExecuteQuery(query);
         }
 
-        public DataTable GetListBillByDate(DateTime checkIn, DateTime checkOut)
-        {
-            return DataProvider.Instance.ExecuteQuery("exec Bill_GetListBillByDate @checkIn , @checkOut", new object[] { checkIn, checkOut});
-        }
+        //public DataTable GetListBillByDate(DateTime checkIn, DateTime checkOut)
+        //{
+        //    return DataProvider.Instance.ExecuteQuery("exec Bill_GetListBillByDate @checkIn , @checkOut", new object[] { checkIn, checkOut});
+        //}
 
         public int  GetNumBillByDate(DateTime checkIn, DateTime checkOut)
         {

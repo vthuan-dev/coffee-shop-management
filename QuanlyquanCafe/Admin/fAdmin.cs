@@ -110,7 +110,8 @@ namespace QuanlyquanCafe.Admin
 
         void LoadListBillByDate(DateTime checkIn, DateTime checkOut)
         {
-            dtgvBill.DataSource = BillDAO.Instance.GetListBillByDate(checkIn, checkOut);
+            dtgvBill.DataSource = BillDAO.Instance.GetListBillByDateAndPage(checkIn, checkOut, 1);
+            txbPageBill.Text = "1";
         }
 
         void LoadMenuList()
@@ -609,10 +610,6 @@ namespace QuanlyquanCafe.Admin
             accountList.DataSource = SearchStaffName(txbStaffSearch.Text);
         }
 
-
-
-        #endregion
-
         private void btnFirst_Click(object sender, EventArgs e)
         {
             txbPageBill.Text = "1";
@@ -622,7 +619,7 @@ namespace QuanlyquanCafe.Admin
         {
             int sumRecord = BillDAO.Instance.GetNumBillByDate(dateBill1.Value, dateBill2.Value);
             int lastPage = sumRecord / 10;
-            if(sumRecord % 10 != 0)
+            if (sumRecord % 10 != 0)
             {
                 lastPage++;
             }
@@ -634,5 +631,33 @@ namespace QuanlyquanCafe.Admin
         {
             dtgvBill.DataSource = BillDAO.Instance.GetListBillByDateAndPage(dateBill1.Value, dateBill2.Value, Convert.ToInt32(txbPageBill.Text));
         }
+
+        private void btnPrev_Click(object sender, EventArgs e)
+        {
+            int page = Convert.ToInt32(txbPageBill.Text);
+
+            if (page > 1)
+            {
+                page--;
+            }
+
+            txbPageBill.Text = page.ToString();
+        }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            int page = Convert.ToInt32(txbPageBill.Text);
+            int sumRecord = BillDAO.Instance.GetNumBillByDate(dateBill1.Value, dateBill2.Value);
+            if (page <= sumRecord/10)
+            {
+                page++;
+            }
+
+            txbPageBill.Text = page.ToString();
+        }
+
+        #endregion
+
+
     }
 }
