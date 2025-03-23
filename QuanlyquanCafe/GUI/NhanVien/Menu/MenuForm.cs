@@ -838,23 +838,45 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                 // Xóa dữ liệu cũ
                 dgvActiveBills.Rows.Clear();
 
-                // Truy vấn để lấy danh sách hóa đơn đang hoạt động
+                // Truy vấn để lấy danh sách hóa đơn đang hoạt động (truy vấn mới)
                 string query = @"
                     SELECT 
-                        b.id, 
-                        f.Name AS TableName, 
-                        b.CheckInDate, 
-                        (SELECT COUNT(*) FROM BillInfo WHERE BillID = b.id) AS TotalItems,
-                        b.TotalPrice, 
-                        CASE WHEN b.Status = 0 THEN N'Đang phục vụ' ELSE N'Đã thanh toán' END AS Status,
-                        u.FullName AS StaffName
-                    FROM Bill b
-                    JOIN Facility f ON b.TableID = f.id
-                    JOIN Users u ON b.UserID = u.uid
-                    WHERE b.Status = 0 AND b.CustomerLeft = 0
-                    ORDER BY b.CheckInDate DESC";
+                        b.id AS [Mã hóa đơn],
+                        f.Name AS [Bàn],
+                        b.CheckInDate AS [Thời gian vào],
+                        COUNT(bi.id) AS [Số món],
+                        SUM(m.Price * bi.Quantity) AS [Tổng tiền],
+                        CASE 
+                            WHEN b.Status = 0 THEN N'Đang phục vụ'
+                            WHEN b.Status = 1 THEN N'Đã thanh toán'
+                            ELSE N'Trạng thái khác'
+                        END AS [Trạng thái],
+                        u.FullName AS [Nhân viên]
+                    FROM 
+                        Bill b
+                    JOIN 
+                        Facility f ON b.TableID = f.id
+                    LEFT JOIN 
+                        BillInfo bi ON b.id = bi.BillID
+                    LEFT JOIN 
+                        Menu m ON bi.MenuID = m.id
+                    LEFT JOIN 
+                        Users u ON b.UserID = u.uid
+                    WHERE 
+                        b.Status = 0
+                        AND b.CustomerLeft = 0
+                    GROUP BY 
+                        b.id, f.Name, b.CheckInDate, b.Status, u.FullName
+                    ORDER BY 
+                        b.CheckInDate DESC";
+
+                // In câu truy vấn để debug
+                Console.WriteLine("Query: " + query);
 
                 DataTable data = DataProvider.Instance.ExecuteQuery(query);
+                
+                // In số lượng kết quả để debug
+                Console.WriteLine("Số lượng hóa đơn: " + data.Rows.Count);
 
                 // Thêm dữ liệu vào DataGridView
                 foreach (DataRow row in data.Rows)
@@ -862,19 +884,32 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                     int rowIndex = dgvActiveBills.Rows.Add();
                     DataGridViewRow gridRow = dgvActiveBills.Rows[rowIndex];
 
-                    gridRow.Cells["ID"].Value = row["id"];
-                    gridRow.Cells["TableName"].Value = row["TableName"];
-                    gridRow.Cells["CheckInTime"].Value = ((DateTime)row["CheckInDate"]).ToString("dd/MM/yyyy HH:mm");
-                    gridRow.Cells["TotalItems"].Value = row["TotalItems"];
-                    gridRow.Cells["TotalAmount"].Value = string.Format("{0:N0} VNĐ", row["TotalPrice"]);
-                    gridRow.Cells["Status"].Value = row["Status"];
-                    gridRow.Cells["Staff"].Value = row["StaffName"];
+                    gridRow.Cells["ID"].Value = row["Mã hóa đơn"];
+                    gridRow.Cells["TableName"].Value = row["Bàn"];
+                    gridRow.Cells["CheckInTime"].Value = ((DateTime)row["Thời gian vào"]).ToString("dd/MM/yyyy HH:mm");
+                    gridRow.Cells["TotalItems"].Value = row["Số món"];
+                    
+                    // Xử lý giá trị tổng tiền có thể là DBNull
+                    object totalAmount = row["Tổng tiền"];
+                    if (totalAmount != DBNull.Value)
+                    {
+                        gridRow.Cells["TotalAmount"].Value = string.Format("{0:N0} VNĐ", totalAmount);
+                    }
+                    else
+                    {
+                        gridRow.Cells["TotalAmount"].Value = "0 VNĐ";
+                    }
+                    
+                    gridRow.Cells["Status"].Value = row["Trạng thái"];
+                    gridRow.Cells["Staff"].Value = row["Nhân viên"];
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi tải danh sách hóa đơn: " + ex.Message, 
-                               "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // In lỗi để debug
+                Console.WriteLine("Exception: " + ex.ToString());
             }
         }
 
@@ -1072,6 +1107,13 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             {
                 autoRefreshTimer.Stop();
                 autoRefreshTimer.Dispose();
+            }
+            
+            // Dừng và giải phóng timerRefresh
+            if (timerRefresh != null)
+            {
+                timerRefresh.Stop();
+                timerRefresh.Dispose();
             }
         }
 
@@ -1329,25 +1371,6 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
         {
             // Tải lại danh sách hóa đơn đang hoạt động
             LoadActiveBills();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (components != null)
-                {
-                    components.Dispose();
-                }
-                
-                // Dừng và giải phóng timer
-                if (timerRefresh != null)
-                {
-                    timerRefresh.Stop();
-                    timerRefresh.Dispose();
-                }
-            }
-            base.Dispose(disposing);
         }
     }
 
