@@ -1052,5 +1052,15 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             
             MessageBox.Show("Đã làm mới dữ liệu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        private void lblOrder_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblActiveBills_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

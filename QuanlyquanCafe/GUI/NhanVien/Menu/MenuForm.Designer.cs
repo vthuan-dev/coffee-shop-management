@@ -32,6 +32,7 @@
             this.pnlActiveBills = new System.Windows.Forms.Panel();
             this.dgvActiveBills = new System.Windows.Forms.DataGridView();
             this.lblActiveBills = new System.Windows.Forms.Label();
+            this.txtBillSearch = new System.Windows.Forms.TextBox();
             this.pnlButtons = new System.Windows.Forms.Panel();
             this.btnSendToKitchen = new System.Windows.Forms.Button();
             this.btnCheckout = new System.Windows.Forms.Button();
@@ -45,9 +46,18 @@
             this.lblTableDetails = new System.Windows.Forms.Label();
             this.pnlOrder = new System.Windows.Forms.Panel();
             this.lblTotal = new System.Windows.Forms.Label();
-            this.cbxTable = new System.Windows.Forms.ComboBox();
             this.lblTable = new System.Windows.Forms.Label();
             this.lblOrder = new System.Windows.Forms.Label();
+            this.tabFloors = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.flpTables1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.flpTables2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.flpTables3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.flpTables4 = new System.Windows.Forms.FlowLayoutPanel();
+            this.cbxTable = new System.Windows.Forms.ComboBox();
             this.pnlSearch = new System.Windows.Forms.Panel();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
@@ -60,21 +70,19 @@
             this.dgvMenuItems = new System.Windows.Forms.DataGridView();
             this.lblMenuListTitle = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.tabFloors = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.flpTables1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flpTables2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flpTables3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flpTables4 = new System.Windows.Forms.FlowLayoutPanel();
-            this.txtBillSearch = new System.Windows.Forms.TextBox();
             this.mainPanel.SuspendLayout();
+            this.pnlActiveBills.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvActiveBills)).BeginInit();
             this.pnlButtons.SuspendLayout();
             this.pnlOrderDetails.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOrderDetails)).BeginInit();
             this.pnlOrder.SuspendLayout();
+            this.tabFloors.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            this.flpTables4.SuspendLayout();
             this.pnlSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -83,11 +91,6 @@
             this.pnlCategories.SuspendLayout();
             this.pnlMenuList.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMenuItems)).BeginInit();
-            this.tabFloors.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
-            this.tabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainPanel
@@ -113,9 +116,9 @@
             this.pnlActiveBills.Controls.Add(this.lblActiveBills);
             this.pnlActiveBills.Controls.Add(this.txtBillSearch);
             this.pnlActiveBills.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlActiveBills.Location = new System.Drawing.Point(10, 400);
+            this.pnlActiveBills.Location = new System.Drawing.Point(10, 427);
             this.pnlActiveBills.Name = "pnlActiveBills";
-            this.pnlActiveBills.Size = new System.Drawing.Size(962, 200);
+            this.pnlActiveBills.Size = new System.Drawing.Size(962, 166);
             this.pnlActiveBills.TabIndex = 5;
             // 
             // dgvActiveBills
@@ -131,7 +134,7 @@
             this.dgvActiveBills.RowHeadersVisible = false;
             this.dgvActiveBills.RowHeadersWidth = 51;
             this.dgvActiveBills.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvActiveBills.Size = new System.Drawing.Size(960, 168);
+            this.dgvActiveBills.Size = new System.Drawing.Size(960, 134);
             this.dgvActiveBills.TabIndex = 0;
             // 
             // lblActiveBills
@@ -144,6 +147,18 @@
             this.lblActiveBills.TabIndex = 1;
             this.lblActiveBills.Text = "Danh sách hóa đơn đang hoạt động";
             this.lblActiveBills.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblActiveBills.Click += new System.EventHandler(this.lblActiveBills_Click);
+            // 
+            // txtBillSearch
+            // 
+            this.txtBillSearch.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.txtBillSearch.Location = new System.Drawing.Point(700, 5);
+            this.txtBillSearch.Name = "txtBillSearch";
+            this.txtBillSearch.Size = new System.Drawing.Size(200, 22);
+            this.txtBillSearch.TabIndex = 2;
+            this.txtBillSearch.Text = "Tìm kiếm hóa đơn...";
+            this.txtBillSearch.Enter += new System.EventHandler(this.txtBillSearch_Enter);
+            this.txtBillSearch.Leave += new System.EventHandler(this.txtBillSearch_Leave);
             // 
             // pnlButtons
             // 
@@ -154,7 +169,7 @@
             this.pnlButtons.Controls.Add(this.btnPrint);
             this.pnlButtons.Controls.Add(this.btnRefresh);
             this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlButtons.Location = new System.Drawing.Point(10, 600);
+            this.pnlButtons.Location = new System.Drawing.Point(10, 593);
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Size = new System.Drawing.Size(962, 50);
             this.pnlButtons.TabIndex = 0;
@@ -198,6 +213,14 @@
             this.btnPrint.TabIndex = 4;
             this.btnPrint.Text = "In hóa đơn";
             // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(10, 10);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(120, 30);
+            this.btnRefresh.TabIndex = 5;
+            this.btnRefresh.Text = "Làm mới";
+            // 
             // pnlOrderDetails
             // 
             this.pnlOrderDetails.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -205,7 +228,7 @@
             this.pnlOrderDetails.Controls.Add(this.lblOrderDetails);
             this.pnlOrderDetails.Controls.Add(this.lblTableDetails);
             this.pnlOrderDetails.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlOrderDetails.Location = new System.Drawing.Point(10, 540);
+            this.pnlOrderDetails.Location = new System.Drawing.Point(10, 580);
             this.pnlOrderDetails.Name = "pnlOrderDetails";
             this.pnlOrderDetails.Size = new System.Drawing.Size(962, 200);
             this.pnlOrderDetails.TabIndex = 1;
@@ -251,9 +274,6 @@
             // 
             this.pnlOrder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlOrder.Controls.Add(this.lblTotal);
-            this.pnlOrder.Controls.Add(this.cbxTable);
-            this.pnlOrder.Controls.Add(this.lblTable);
-            this.pnlOrder.Controls.Add(this.lblOrder);
             this.pnlOrder.Controls.Add(this.tabFloors);
             this.pnlOrder.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlOrder.Location = new System.Drawing.Point(10, 380);
@@ -271,18 +291,10 @@
             this.lblTotal.TabIndex = 0;
             this.lblTotal.Text = "Tổng: 0 VNĐ";
             // 
-            // cbxTable
-            // 
-            this.cbxTable.Location = new System.Drawing.Point(10, 5);
-            this.cbxTable.Name = "cbxTable";
-            this.cbxTable.Size = new System.Drawing.Size(200, 24);
-            this.cbxTable.TabIndex = 1;
-            this.cbxTable.Visible = false;
-            // 
             // lblTable
             // 
             this.lblTable.AutoSize = true;
-            this.lblTable.Location = new System.Drawing.Point(10, 5);
+            this.lblTable.Location = new System.Drawing.Point(3, 0);
             this.lblTable.Name = "lblTable";
             this.lblTable.Size = new System.Drawing.Size(34, 16);
             this.lblTable.TabIndex = 2;
@@ -291,11 +303,112 @@
             // lblOrder
             // 
             this.lblOrder.AutoSize = true;
-            this.lblOrder.Location = new System.Drawing.Point(10, 5);
+            this.lblOrder.Location = new System.Drawing.Point(3, 16);
             this.lblOrder.Name = "lblOrder";
             this.lblOrder.Size = new System.Drawing.Size(115, 16);
             this.lblOrder.TabIndex = 3;
             this.lblOrder.Text = "Đơn hàng hiện tại: ";
+            this.lblOrder.Click += new System.EventHandler(this.lblOrder_Click);
+            // 
+            // tabFloors
+            // 
+            this.tabFloors.Controls.Add(this.tabPage1);
+            this.tabFloors.Controls.Add(this.tabPage2);
+            this.tabFloors.Controls.Add(this.tabPage3);
+            this.tabFloors.Controls.Add(this.tabPage4);
+            this.tabFloors.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabFloors.Location = new System.Drawing.Point(0, 0);
+            this.tabFloors.Name = "tabFloors";
+            this.tabFloors.SelectedIndex = 0;
+            this.tabFloors.Size = new System.Drawing.Size(960, 198);
+            this.tabFloors.TabIndex = 0;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.flpTables1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Size = new System.Drawing.Size(952, 169);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Tầng 1";
+            // 
+            // flpTables1
+            // 
+            this.flpTables1.AutoScroll = true;
+            this.flpTables1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpTables1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpTables1.Location = new System.Drawing.Point(0, 0);
+            this.flpTables1.Name = "flpTables1";
+            this.flpTables1.Size = new System.Drawing.Size(952, 169);
+            this.flpTables1.TabIndex = 0;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.flpTables2);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Size = new System.Drawing.Size(952, 169);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Tầng 2";
+            // 
+            // flpTables2
+            // 
+            this.flpTables2.AutoScroll = true;
+            this.flpTables2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpTables2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpTables2.Location = new System.Drawing.Point(0, 0);
+            this.flpTables2.Name = "flpTables2";
+            this.flpTables2.Size = new System.Drawing.Size(952, 169);
+            this.flpTables2.TabIndex = 0;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.flpTables3);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(952, 169);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Tầng 3";
+            // 
+            // flpTables3
+            // 
+            this.flpTables3.AutoScroll = true;
+            this.flpTables3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpTables3.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpTables3.Location = new System.Drawing.Point(0, 0);
+            this.flpTables3.Name = "flpTables3";
+            this.flpTables3.Size = new System.Drawing.Size(952, 169);
+            this.flpTables3.TabIndex = 0;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.flpTables4);
+            this.tabPage4.Location = new System.Drawing.Point(4, 25);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(952, 169);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Tầng 4";
+            // 
+            // flpTables4
+            // 
+            this.flpTables4.AutoScroll = true;
+            this.flpTables4.Controls.Add(this.lblTable);
+            this.flpTables4.Controls.Add(this.lblOrder);
+            this.flpTables4.Controls.Add(this.cbxTable);
+            this.flpTables4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpTables4.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpTables4.Location = new System.Drawing.Point(0, 0);
+            this.flpTables4.Name = "flpTables4";
+            this.flpTables4.Size = new System.Drawing.Size(952, 169);
+            this.flpTables4.TabIndex = 0;
+            // 
+            // cbxTable
+            // 
+            this.cbxTable.Location = new System.Drawing.Point(3, 35);
+            this.cbxTable.Name = "cbxTable";
+            this.cbxTable.Size = new System.Drawing.Size(200, 24);
+            this.cbxTable.TabIndex = 1;
+            this.cbxTable.Visible = false;
             // 
             // pnlSearch
             // 
@@ -433,110 +546,28 @@
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblTitle.Click += new System.EventHandler(this.lblTitle_Click);
             // 
-            // tabFloors
-            // 
-            this.tabFloors.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabFloors.Location = new System.Drawing.Point(0, 0);
-            this.tabFloors.Name = "tabFloors";
-            this.tabFloors.SelectedIndex = 0;
-            this.tabFloors.Size = new System.Drawing.Size(962, 130);
-            this.tabFloors.TabIndex = 0;
-            this.tabFloors.Controls.Add(this.tabPage1);
-            this.tabFloors.Controls.Add(this.tabPage2);
-            this.tabFloors.Controls.Add(this.tabPage3);
-            this.tabFloors.Controls.Add(this.tabPage4);
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Text = "Tầng 1";
-            this.tabPage1.Controls.Add(this.flpTables1);
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Text = "Tầng 2";
-            this.tabPage2.Controls.Add(this.flpTables2);
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Text = "Tầng 3";
-            this.tabPage3.Controls.Add(this.flpTables3);
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Text = "Tầng 4";
-            this.tabPage4.Controls.Add(this.flpTables4);
-            // 
-            // flpTables1
-            // 
-            this.flpTables1.AutoScroll = true;
-            this.flpTables1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpTables1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpTables1.Location = new System.Drawing.Point(0, 0);
-            this.flpTables1.Name = "flpTables1";
-            this.flpTables1.Size = new System.Drawing.Size(292, 268);
-            this.flpTables1.TabIndex = 0;
-            // 
-            // flpTables2
-            // 
-            this.flpTables2.AutoScroll = true;
-            this.flpTables2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpTables2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpTables2.Location = new System.Drawing.Point(0, 0);
-            this.flpTables2.Name = "flpTables2";
-            this.flpTables2.Size = new System.Drawing.Size(292, 268);
-            this.flpTables2.TabIndex = 0;
-            // 
-            // flpTables3
-            // 
-            this.flpTables3.AutoScroll = true;
-            this.flpTables3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpTables3.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpTables3.Location = new System.Drawing.Point(0, 0);
-            this.flpTables3.Name = "flpTables3";
-            this.flpTables3.Size = new System.Drawing.Size(292, 268);
-            this.flpTables3.TabIndex = 0;
-            // 
-            // flpTables4
-            // 
-            this.flpTables4.AutoScroll = true;
-            this.flpTables4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpTables4.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpTables4.Location = new System.Drawing.Point(0, 0);
-            this.flpTables4.Name = "flpTables4";
-            this.flpTables4.Size = new System.Drawing.Size(292, 268);
-            this.flpTables4.TabIndex = 0;
-            // 
-            // btnRefresh
-            // 
-            this.btnRefresh.Location = new System.Drawing.Point(10, 10);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(120, 30);
-            this.btnRefresh.TabIndex = 5;
-            this.btnRefresh.Text = "Làm mới";
-            // 
-            // txtBillSearch
-            // 
-            this.txtBillSearch.Location = new System.Drawing.Point(700, 5);
-            this.txtBillSearch.Name = "txtBillSearch";
-            this.txtBillSearch.Size = new System.Drawing.Size(200, 22);
-            this.txtBillSearch.Text = "Tìm kiếm hóa đơn...";
-            this.txtBillSearch.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.txtBillSearch.Enter += new System.EventHandler(this.txtBillSearch_Enter);
-            this.txtBillSearch.Leave += new System.EventHandler(this.txtBillSearch_Leave);
-            this.pnlActiveBills.Controls.Add(this.txtBillSearch);
-            // 
             // MenuForm
             // 
             this.ClientSize = new System.Drawing.Size(982, 653);
             this.Controls.Add(this.mainPanel);
             this.Name = "MenuForm";
             this.mainPanel.ResumeLayout(false);
+            this.pnlActiveBills.ResumeLayout(false);
+            this.pnlActiveBills.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvActiveBills)).EndInit();
             this.pnlButtons.ResumeLayout(false);
             this.pnlOrderDetails.ResumeLayout(false);
             this.pnlOrderDetails.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOrderDetails)).EndInit();
             this.pnlOrder.ResumeLayout(false);
             this.pnlOrder.PerformLayout();
+            this.tabFloors.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
+            this.flpTables4.ResumeLayout(false);
+            this.flpTables4.PerformLayout();
             this.pnlSearch.ResumeLayout(false);
             this.pnlSearch.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -546,11 +577,6 @@
             this.pnlCategories.ResumeLayout(false);
             this.pnlMenuList.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvMenuItems)).EndInit();
-            this.tabFloors.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -584,6 +610,7 @@
         private System.Windows.Forms.Button btnCheckout;
         private System.Windows.Forms.Button btnSendToKitchen;
         private System.Windows.Forms.Button btnPrint;
+        private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.Label lblTableDetails;
         private System.Windows.Forms.Panel pnlActiveBills;
         private System.Windows.Forms.DataGridView dgvActiveBills;
@@ -597,7 +624,6 @@
         private System.Windows.Forms.FlowLayoutPanel flpTables2;
         private System.Windows.Forms.FlowLayoutPanel flpTables3;
         private System.Windows.Forms.FlowLayoutPanel flpTables4;
-        private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.TextBox txtBillSearch;
     }
 }
