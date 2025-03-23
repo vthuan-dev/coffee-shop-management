@@ -9,41 +9,43 @@ namespace QuanlyquanCafe.Admin.DTO
 {
     public class Account
     {
-        public Account(int id, string userName, string phone, string fullName, string email, string role)
+        public Account(int id, string password, string role, string fullName, string email, string phone)
         {
             this.Id = id;
-            this.UserName = userName;
-            //this.PassWord = passWord;
-            this.FullName = fullName;
-            this.Email = email;
+            this.Password = password;
             this.Role = role;
+            this.FullName = fullName;
+            this.Phone = phone;
+            this.Email = email;
+            
         }
 
         public Account(DataRow row)
         {
             this.Id = (int)row["uid"];
-            this.UserName = row["UserName"].ToString();
-            //this.PassWord = row["passWord"].ToString();
-            this.Phone = row["Phone"].ToString();
-            this.FullName = row["FullName"].ToString();
-            this.Email = row["Email"].ToString();
+            this.Password = row["Password"].ToString();
             this.Role = row["Role"].ToString();
+            this.FullName = row["FullName"].ToString();
+            this.Phone = row["Phone"].ToString();
+            this.Email = row["Email"].ToString();
+            
         }
+
         private int id;
+        private string password;
         private string role;
-        private string email;
-        private string phone;
         private string fullName;
-        //private string passWord;
-        private string userName;
+        private string phone;
+        private string email;
+        
 
         public int Id { get => id; set => id = value; }
-        public string UserName { get => userName; set => userName = value; }
-        //public string PassWord { get => passWord; set => passWord = value; }
-        public string FullName { get => fullName; set => fullName = value; }
-        public string Email { get => email; set => email = value; }
+        public string Password { get => password; set => password = value; }
         public string Role { get => role; set => role = value; }
+        public string FullName { get => fullName; set => fullName = value; }
         
         public string Phone { get => phone; set => phone = value; }
+
+        public string Email { get => email; set => email = value; }
     }
 }

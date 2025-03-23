@@ -1,4 +1,4 @@
-﻿using QuanlyquanCafe.GUI.NhanVien;
+﻿using QuanlyquanCafe.Auth;
 using System;
 using System.Windows.Forms;
 
@@ -14,7 +14,7 @@ namespace QuanlyquanCafe
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainNhanVienForm());
+            Application.Run(new Form1());
         }
     }
 }

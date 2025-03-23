@@ -14,7 +14,7 @@ namespace QuanlyquanCafe.Admin.DAO
 
 
 
-        private string connStr = "Data Source=localhost;Initial Catalog=RestaurantManagement;User ID=sa;Password=0706871283;TrustServerCertificate=True";
+        private string connStr = "Data Source=UNCL3KH4NH;Initial Catalog=RestaurantManagement;Integrated Security=True;TrustServerCertificate=True";
 
         public static DataProvider Instance { 
             get { if (instance == null) instance = new DataProvider(); return DataProvider.instance; } 
@@ -49,31 +49,31 @@ namespace QuanlyquanCafe.Admin.DAO
             return data;
         }
 
-        public int ExecuteNonQuery(string query, object[] parameter = null)
+public int ExecuteNonQuery(string query, object[] parameter = null)
+{
+    int data = 0;
+    using (SqlConnection conn = new SqlConnection(connStr))
+    {
+        conn.Open();
+        SqlCommand cmd = new SqlCommand(query, conn);
+        if (parameter != null)
         {
-            int data = 0;
-            using (SqlConnection conn = new SqlConnection(connStr))
+            string[] listPara = query.Split(' ');
+            int i = 0;
+            foreach (string item in listPara)
             {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(query, conn);
-                if (parameter != null)
+                if (item.Contains('@'))
                 {
-                    string[] listPara = query.Split(' ');
-                    int i = 0;
-                    foreach (string item in listPara)
-                    {
-                        if (item.Contains('@'))
-                        {
-                            cmd.Parameters.AddWithValue(item, parameter[i]);
-                            i++;
-                        }
-                    }
+                    cmd.Parameters.AddWithValue(item, parameter[i]);
+                    i++;
                 }
-                data = cmd.ExecuteNonQuery();
-                conn.Close();
             }
-            return data;
         }
+        data = cmd.ExecuteNonQuery();
+        conn.Close();
+    }
+    return data;
+}
 
         public object ExecuteScalar(string query, object[] parameter = null)
         {
