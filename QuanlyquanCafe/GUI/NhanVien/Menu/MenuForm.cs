@@ -791,103 +791,158 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
         {
             try
             {
+                // Kiểm tra dữ liệu đầu vào
+                if (billInfo == null || billInfo.Rows.Count == 0)
+                {
+                    e.Graphics.DrawString("Không có dữ liệu hóa đơn!", new Font("Arial", 14, FontStyle.Bold), Brushes.Red, 100, 100);
+                    return;
+                }
+                
+                if (billDetails == null || billDetails.Rows.Count == 0)
+                {
+                    e.Graphics.DrawString("Không có chi tiết hóa đơn!", new Font("Arial", 14, FontStyle.Bold), Brushes.Red, 100, 150);
+                }
+
                 // Lấy thông tin từ DataTable
                 DataRow billRow = billInfo.Rows[0];
                 
                 // Định nghĩa font và bút
-                Font titleFont = new Font("Arial", 16, FontStyle.Bold);
-                Font headerFont = new Font("Arial", 12, FontStyle.Bold);
-                Font normalFont = new Font("Arial", 10, FontStyle.Regular);
-                Font smallFont = new Font("Arial", 8, FontStyle.Regular);
-                Font thankYouFont = new Font("Arial", 10, FontStyle.Italic);
+                Font titleFont = new Font("Arial", 12, FontStyle.Bold);
+                Font subTitleFont = new Font("Arial", 10, FontStyle.Bold);
+                Font headerFont = new Font("Arial", 9, FontStyle.Bold);
+                Font normalFont = new Font("Arial", 9, FontStyle.Regular);
+                Font totalFont = new Font("Arial", 10, FontStyle.Bold);
+                Font thankYouFont = new Font("Arial", 9, FontStyle.Italic);
                 
                 Brush textBrush = Brushes.Black;
                 Pen linePen = new Pen(Color.Black, 1);
                 
-                // Định vị và kích thước
+                // Định vị và kích thước (căn theo tờ A5)
                 float yPos = 50;
                 int leftMargin = 50;
-                int width = e.PageBounds.Width - 100;
+                int width = 500;
+                int centerX = leftMargin + width / 2;
                 
-                // Vẽ tiêu đề
-                e.Graphics.DrawString("HÓA ĐƠN", titleFont, textBrush, leftMargin + width / 2 - 50, yPos);
-                yPos += 40;
+                // Vẽ thông tin quán
+                e.Graphics.DrawString("Liceria & Co", titleFont, textBrush, centerX - 55, yPos);
+                yPos += 20;
+                
+                string address = "Đường 3/2 , Xuân Khánh , Ninh Kiều, Cần Thơ";
+                e.Graphics.DrawString(address, normalFont, textBrush, centerX - e.Graphics.MeasureString(address, normalFont).Width / 2, yPos);
+                yPos += 15;
+                
+                string phone = "ĐT: 0706871283";
+                e.Graphics.DrawString(phone, normalFont, textBrush, centerX - e.Graphics.MeasureString(phone, normalFont).Width / 2, yPos);
+                yPos += 20;
+                
+                // Vẽ tiêu đề hóa đơn
+                e.Graphics.DrawString("HÓA ĐƠN BÁN HÀNG", subTitleFont, textBrush, centerX - 70, yPos);
+                yPos += 25;
                 
                 // Thông tin hóa đơn
                 e.Graphics.DrawString($"Số hóa đơn: {billRow["id"]}", normalFont, textBrush, leftMargin, yPos);
+                e.Graphics.DrawString($"Bàn: {billRow["TableName"]}", normalFont, textBrush, leftMargin + 200, yPos);
                 yPos += 20;
                 
-                // Thời gian
-                DateTime checkInDate = (DateTime)billRow["CheckInDate"];
-                e.Graphics.DrawString($"Thời gian: {checkInDate.ToString("dd/MM/yyyy HH:mm")}", normalFont, textBrush, leftMargin, yPos);
+                // Thông tin ngày giờ
+                DateTime checkInDate = Convert.ToDateTime(billRow["CheckInDate"]);
+                string dateStr = checkInDate.ToString("dd/MM/yyyy");
+                e.Graphics.DrawString($"Ngày: {dateStr}", normalFont, textBrush, leftMargin, yPos);
+                
+                string timeStr = checkInDate.ToString("HH:mm");
+                e.Graphics.DrawString($"Giờ vào: {timeStr}", normalFont, textBrush, leftMargin + 200, yPos);
+                e.Graphics.DrawString($"Giờ ra: {DateTime.Now.ToString("HH:mm")}", normalFont, textBrush, leftMargin + 350, yPos);
                 yPos += 20;
                 
-                // Nhân viên
-                e.Graphics.DrawString($"Nhân viên: {billRow["StaffName"]}", normalFont, textBrush, leftMargin, yPos);
-                yPos += 20;
+                // Thu ngân
+                if (billRow["StaffName"] != DBNull.Value)
+                    e.Graphics.DrawString($"Thu ngân: {billRow["StaffName"]}", normalFont, textBrush, leftMargin, yPos);
+                yPos += 15;
                 
-                // Bàn
-                e.Graphics.DrawString($"Bàn: {billRow["TableName"]}", normalFont, textBrush, leftMargin, yPos);
-                yPos += 30;
-                
-                // Đường kẻ ngang
+                // Vẽ đường kẻ ngang
                 e.Graphics.DrawLine(linePen, leftMargin, yPos, leftMargin + width, yPos);
                 yPos += 10;
                 
-                // Tiêu đề chi tiết hóa đơn
-                e.Graphics.DrawString("Món", headerFont, textBrush, leftMargin, yPos);
-                e.Graphics.DrawString("SL", headerFont, textBrush, leftMargin + 200, yPos);
-                e.Graphics.DrawString("Đơn giá", headerFont, textBrush, leftMargin + 250, yPos);
-                e.Graphics.DrawString("Thành tiền", headerFont, textBrush, leftMargin + 350, yPos);
+                // Tiêu đề bảng chi tiết
+                string[] headers = new string[] { "Mặt hàng", "SL", "Giá", "Thành tiền" };
+                float[] colWidths = new float[] { 0.45f, 0.15f, 0.2f, 0.2f };
+                
+                // Vẽ tiêu đề bảng
+                float xPos = leftMargin;
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    e.Graphics.DrawString(headers[i], headerFont, textBrush, xPos, yPos);
+                    xPos += width * colWidths[i];
+                }
                 yPos += 20;
                 
-                // Đường kẻ ngang
+                // Vẽ đường kẻ ngang dưới tiêu đề
                 e.Graphics.DrawLine(linePen, leftMargin, yPos, leftMargin + width, yPos);
                 yPos += 10;
                 
-                // Chi tiết các món
+                // Vẽ các mục trong bảng
+                decimal totalAmount = 0;
                 foreach (DataRow row in billDetails.Rows)
                 {
-                    e.Graphics.DrawString(row["Tên món"].ToString(), normalFont, textBrush, leftMargin, yPos);
-                    e.Graphics.DrawString(row["Số lượng"].ToString(), normalFont, textBrush, leftMargin + 200, yPos);
-                    e.Graphics.DrawString(Convert.ToDecimal(row["Đơn giá"]).ToString("N0"), normalFont, textBrush, leftMargin + 250, yPos);
-                    e.Graphics.DrawString(Convert.ToDecimal(row["Thành tiền"]).ToString("N0"), normalFont, textBrush, leftMargin + 350, yPos);
+                    xPos = leftMargin;
+                    
+                    // Tên món
+                    e.Graphics.DrawString(row["MenuName"].ToString(), normalFont, textBrush, xPos, yPos);
+                    
+                    // Số lượng
+                    xPos = leftMargin + width * colWidths[0];
+                    int quantity = Convert.ToInt32(row["Quantity"]);
+                    e.Graphics.DrawString(quantity.ToString(), normalFont, textBrush, xPos, yPos);
+                    
+                    // Đơn giá
+                    xPos = leftMargin + width * (colWidths[0] + colWidths[1]);
+                    decimal price = Convert.ToDecimal(row["Price"]);
+                    e.Graphics.DrawString(string.Format("{0:N0}", price), normalFont, textBrush, xPos, yPos);
+                    
+                    // Thành tiền
+                    xPos = leftMargin + width * (colWidths[0] + colWidths[1] + colWidths[2]);
+                    decimal total = Convert.ToDecimal(row["Total"]);
+                    totalAmount += total;
+                    e.Graphics.DrawString(string.Format("{0:N0}", total), normalFont, textBrush, xPos, yPos);
+                    
                     yPos += 20;
                 }
                 
-                // Đường kẻ ngang
+                // Vẽ đường kẻ ngang dưới danh sách món
                 e.Graphics.DrawLine(linePen, leftMargin, yPos, leftMargin + width, yPos);
+                yPos += 10;
+                
+                // Hiển thị tổng cộng
+                float rightAlign = leftMargin + width - 80;
+                e.Graphics.DrawString("Tổng:", totalFont, textBrush, rightAlign - 80, yPos);
+                e.Graphics.DrawString(string.Format("{0:N0}", totalAmount), totalFont, textBrush, rightAlign, yPos);
                 yPos += 20;
                 
-                // Tổng cộng
-                e.Graphics.DrawString("Tổng tiền:", headerFont, textBrush, leftMargin + 200, yPos);
-                e.Graphics.DrawString(Convert.ToDecimal(billRow["TotalAmount"]).ToString("N0") + " VNĐ", headerFont, textBrush, leftMargin + 350, yPos);
-                yPos += 20;
+                // Hiển thị giảm giá nếu có
+                if (billRow["Discount"] != DBNull.Value && Convert.ToDecimal(billRow["Discount"]) > 0)
+                {
+                    decimal discount = Convert.ToDecimal(billRow["Discount"]);
+                    decimal discountAmount = totalAmount * discount / 100;
+                    
+                    e.Graphics.DrawString($"Giảm giá ({discount}%):", normalFont, textBrush, rightAlign - 80, yPos);
+                    e.Graphics.DrawString(string.Format("- {0:N0}", discountAmount), normalFont, textBrush, rightAlign, yPos);
+                    yPos += 20;
+                    
+                    // Thành tiền sau giảm giá
+                    decimal finalAmount = totalAmount - discountAmount;
+                    e.Graphics.DrawString("Thanh toán:", totalFont, textBrush, rightAlign - 80, yPos);
+                    e.Graphics.DrawString(string.Format("{0:N0}", finalAmount), totalFont, textBrush, rightAlign, yPos);
+                    yPos += 20;
+                }
                 
-                // Giảm giá
-                e.Graphics.DrawString("Giảm giá:", normalFont, textBrush, leftMargin + 200, yPos);
-                e.Graphics.DrawString(Convert.ToDecimal(billRow["Discount"]).ToString("N0") + "%", normalFont, textBrush, leftMargin + 350, yPos);
-                yPos += 20;
-                
-                // Thanh toán
-                e.Graphics.DrawString("Thanh toán:", headerFont, textBrush, leftMargin + 200, yPos);
-                e.Graphics.DrawString(Convert.ToDecimal(billRow["FinalAmount"]).ToString("N0") + " VNĐ", headerFont, textBrush, leftMargin + 350, yPos);
-                yPos += 40;
-                
-                // Đường kẻ ngang
+                // Vẽ đường kẻ dưới tổng cộng
                 e.Graphics.DrawLine(linePen, leftMargin, yPos, leftMargin + width, yPos);
-                yPos += 20;
-                
-                // Lời cảm ơn
-                e.Graphics.DrawString("Cảm ơn quý khách đã sử dụng dịch vụ!", thankYouFont, textBrush, leftMargin + width / 2 - 120, yPos);
-                yPos += 20;
-                
-                // Thông tin liên hệ
-                e.Graphics.DrawString("Địa chỉ: 123 Đường ABC, Quận XYZ, TP.HCM", smallFont, textBrush, leftMargin, yPos);
                 yPos += 15;
-                e.Graphics.DrawString("Số điện thoại: (028) 1234 5678", smallFont, textBrush, leftMargin, yPos);
-                yPos += 15;
-                e.Graphics.DrawString("Website: www.quanlycafe.com", smallFont, textBrush, leftMargin, yPos);
+                
+                // Hiển thị lời cảm ơn
+                string thankYouMsg = "Cảm ơn Quý khách. Hẹn gặp lại!";
+                e.Graphics.DrawString(thankYouMsg, thankYouFont, textBrush, 
+                    centerX - e.Graphics.MeasureString(thankYouMsg, thankYouFont).Width / 2, yPos);
                 
                 // Không còn trang khác để in
                 e.HasMorePages = false;
@@ -895,6 +950,7 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             catch (Exception ex)
             {
                 Console.WriteLine("Lỗi khi vẽ trang in: " + ex.ToString());
+                e.Graphics.DrawString("Đã xảy ra lỗi khi in hóa đơn: " + ex.Message, new Font("Arial", 12, FontStyle.Bold), Brushes.Red, 100, 100);
             }
         }
 
@@ -1404,8 +1460,8 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                     gridRow.Cells[0].Value = row["MenuID"]; // ID món
                     gridRow.Cells[1].Value = row["MenuName"]; // Tên món
                     gridRow.Cells[2].Value = row["Quantity"]; // Số lượng
-                    gridRow.Cells[3].Value = string.Format("{0:N0} VNĐ", row["Price"]); // Đơn giá
-                    gridRow.Cells[4].Value = string.Format("{0:N0} VNĐ", row["Total"]); // Thành tiền
+                    gridRow.Cells[3].Value = string.Format("{0:N0}", row["Price"]); // Đơn giá
+                    gridRow.Cells[4].Value = string.Format("{0:N0}", row["Total"]); // Thành tiền
                     
                     // Thông tin bàn (nếu có cột này)
                     if (dgvOrderDetails.Columns.Count > 5)

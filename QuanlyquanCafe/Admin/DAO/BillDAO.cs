@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using QuanlyquanCafe.Admin.DTO;
+using System.Data.SqlClient;
 
 namespace QuanlyquanCafe.Admin.DAO
 {
@@ -129,30 +130,71 @@ namespace QuanlyquanCafe.Admin.DAO
         // Lấy chi tiết bill để in
         public DataTable GetBillDetails(int billID)
         {
-            string query = @"
-                SELECT m.Name AS [Tên món], bi.Quantity AS [Số lượng], 
-                       m.Price AS [Đơn giá], (m.Price * bi.Quantity) AS [Thành tiền]
-                FROM BillInfo bi
-                JOIN Menu m ON bi.MenuID = m.id
-                WHERE bi.BillID = @billId";
+            try {
+                string query = @"
+                    SELECT 
+                        m.Name AS MenuName, 
+                        bi.Quantity, 
+                        m.Price,
+                        (m.Price * bi.Quantity) AS Total
+                    FROM 
+                        BillInfo bi
+                    JOIN 
+                        Menu m ON bi.MenuID = m.id
+                    WHERE 
+                        bi.BillID = @BillID
+                    ORDER BY
+                        m.Name";
+                    
+                Console.WriteLine("GetBillDetails query: " + query);
                 
-            return DataProvider.Instance.ExecuteQuery(query, new object[] { billID });
+                object[] parameters = new object[] { new SqlParameter("@BillID", billID) };
+                return DataProvider.Instance.ExecuteQueryWithParameters(query, parameters);
+            }
+            catch (Exception ex) {
+                Console.WriteLine("Error in GetBillDetails: " + ex.ToString());
+                throw;
+            }
         }
 
         // Lấy thông tin bill để in
         public DataTable GetBillInfo(int billID)
         {
-            string query = @"
-                SELECT b.id, u.FullName AS [Nhân viên], t.Name AS [Bàn], 
-                       b.CheckInDate AS [Ngày], b.TotalPrice AS [Tổng tiền], 
-                       b.Discount AS [Giảm giá], 
-                       (b.TotalPrice - (b.TotalPrice * b.Discount / 100)) AS [Thanh toán]
-                FROM Bill b
-                JOIN Users u ON b.UserID = u.uid
-                JOIN Facility t ON b.TableID = t.id
-                WHERE b.id = @billId";
+            try {
+                string query = @"
+                    SELECT 
+                        b.id, 
+                        f.Name AS TableName, 
+                        b.CheckInDate,
+                        u.FullName AS StaffName,
+                        b.Discount,
+                        SUM(m.Price * bi.Quantity) AS TotalAmount,
+                        (SUM(m.Price * bi.Quantity) * (1 - b.Discount/100.0)) AS FinalAmount
+                    FROM 
+                        Bill b
+                    JOIN 
+                        Facility f ON b.TableID = f.id
+                    LEFT JOIN 
+                        Users u ON b.UserID = u.uid
+                    LEFT JOIN 
+                        BillInfo bi ON b.id = bi.BillID
+                    LEFT JOIN 
+                        Menu m ON bi.MenuID = m.id
+                    WHERE 
+                        b.id = @BillID
+                    GROUP BY 
+                        b.id, f.Name, b.CheckInDate, u.FullName, b.Discount";
+                    
+                Console.WriteLine("GetBillInfo query: " + query);
+                Console.WriteLine("billID: " + billID);
                 
-            return DataProvider.Instance.ExecuteQuery(query, new object[] { billID });
+                object[] parameters = new object[] { new SqlParameter("@BillID", billID) };
+                return DataProvider.Instance.ExecuteQueryWithParameters(query, parameters);
+            }
+            catch (Exception ex) {
+                Console.WriteLine("Error in GetBillInfo: " + ex.ToString());
+                throw;
+            }
         }
 
         public DataTable GetListBillByDate(DateTime checkIn, DateTime checkOut)
