@@ -160,6 +160,16 @@ namespace QuanlyquanCafe.Admin.DAO
             return DataProvider.Instance.ExecuteQuery("exec Bill_GetListBillByDate @checkIn , @checkOut", new object[] { checkIn, checkOut});
         }
 
+        public int  GetNumBillByDate(DateTime checkIn, DateTime checkOut)
+        {
+            return (int)DataProvider.Instance.ExecuteScalar("exec Bill_GetNumBillByDate @checkIn , @checkOut", new object[] { checkIn, checkOut });
+        }
+
+        public DataTable GetListBillByDateAndPage(DateTime checkIn, DateTime checkOut, int pageNum)
+        {
+            return DataProvider.Instance.ExecuteQuery("exec Bill_GetListBillByDateAndPage @checkIn , @checkOut, @page", new object[] { checkIn, checkOut, pageNum });
+        }
+
         public void DeleteBillByTableID(int id)
         {
             string query = string.Format("Delete BillInfo where BillID in (select id from Bill where TableID = {0})", id);
