@@ -133,5 +133,32 @@ namespace QuanlyquanCafe.Admin.DAO
             return data;
         }
 
+        public object ExecuteScalarWithParameters(string query, object[] parameters = null)
+        {
+            object result = null;
+
+            using (SqlConnection connection = new SqlConnection(connStr))
+            {
+                connection.Open();
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                if (parameters != null)
+                {
+                    foreach (object parameter in parameters)
+                    {
+                        if (parameter is SqlParameter sqlParam)
+                        {
+                            command.Parameters.Add(sqlParam);
+                        }
+                    }
+                }
+
+                result = command.ExecuteScalar();
+                connection.Close();
+            }
+
+            return result;
+        }
     }
 }
