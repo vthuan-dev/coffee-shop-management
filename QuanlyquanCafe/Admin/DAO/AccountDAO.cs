@@ -25,11 +25,16 @@ namespace QuanlyquanCafe.Admin.DAO
             }
         }
         private AccountDAO() { }
-        public bool Login(string email, string passWord)
+        public string Login(string email, string password)
         {
-            string query = "Users_Login @email , @passWord";
-            DataTable result = DataProvider.Instance.ExecuteQuery(query, new object[] {email, passWord});
-            return result.Rows.Count > 0;
+            string query = "SELECT Role FROM Users WHERE Email = @email AND Password = @password";
+            DataTable result = DataProvider.Instance.ExecuteQuery(query, new object[] { email, password });
+            
+            if (result.Rows.Count > 0)
+            {
+                return result.Rows[0]["Role"].ToString();
+            }
+            return null;
         }
 
         public List<Account> GetListAccount()
@@ -111,6 +116,22 @@ namespace QuanlyquanCafe.Admin.DAO
             }
 
             return listEmployee;
+        }
+
+        public bool Register(string password, string role, string fullName, string phone, string email)
+        {
+            string query = "INSERT INTO Users (Password, Role, FullName, Phone, Email) VALUES (@password, @role, @fullName, @phone, @email)";
+            object[] parameters = new object[] { password, role, fullName, phone, email };
+            int result = DataProvider.Instance.ExecuteNonQuery(query, parameters);
+            return result > 0;
+        }
+
+        public bool IsEmailOrPhoneExists(string email, string phone)
+        {
+            string query = "SELECT COUNT(*) FROM Users WHERE Email = @email OR Phone = @phone";
+            object[] parameters = new object[] { email, phone };
+            int count = Convert.ToInt32(DataProvider.Instance.ExecuteScalar(query, parameters));
+            return count > 0;
         }
 
     }

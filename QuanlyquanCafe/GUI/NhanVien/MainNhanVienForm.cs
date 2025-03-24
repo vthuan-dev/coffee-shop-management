@@ -1,20 +1,14 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using QuanlyquanCafe.GUI.NhanVien.Ban;
 using QuanlyquanCafe.GUI.NhanVien.Menu;
-using QuanlyquanCafe.GUI.NhanVien.PhaChe;
-// using QuanlyquanCafe.GUI.NhanVien.DonHang;
 
 namespace QuanlyquanCafe.GUI.NhanVien
 {
     public partial class MainNhanVienForm : Form
     {
         private TabControl tabControl;
-        private TabPage tabBan;
         private TabPage tabMenu;
-        private TabPage tabPhaChe;
-        // private TabPage tabDonHang;
 
         public MainNhanVienForm()
         {
@@ -34,18 +28,6 @@ namespace QuanlyquanCafe.GUI.NhanVien
             // Thêm xử lý sự kiện khi chuyển tab
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
-            // Tab Bàn
-            tabBan = new TabPage("Quản lý bàn");
-            var banForm = new BanForm
-            {
-                TopLevel = false,
-                FormBorderStyle = FormBorderStyle.None,
-                Dock = DockStyle.Fill,
-                Visible = true  // Đảm bảo form hiển thị
-            };
-            tabBan.Controls.Add(banForm);
-            banForm.Show();
-
             // Tab Menu
             tabMenu = new TabPage("Menu");
             var menuForm = new MenuForm
@@ -57,36 +39,8 @@ namespace QuanlyquanCafe.GUI.NhanVien
             tabMenu.Controls.Add(menuForm);
             menuForm.Show();
 
-            // Tab Pha chế
-            tabPhaChe = new TabPage("Pha chế");
-            var phaCheForm = new PhaCheForm
-            {
-                TopLevel = false,
-                FormBorderStyle = FormBorderStyle.None,
-                Dock = DockStyle.Fill
-            };
-            tabPhaChe.Controls.Add(phaCheForm);
-            phaCheForm.Show();
-
-            // // Tab Danh sách đơn hàng
-            // tabDonHang = new TabPage("Đơn hàng");
-            // var donHangForm = new DonHangListForm
-            // {
-            //     TopLevel = false,
-            //     FormBorderStyle = FormBorderStyle.None,
-            //     Dock = DockStyle.Fill,
-            //     Visible = true
-            // };
-            // tabDonHang.Controls.Add(donHangForm);
-            // donHangForm.Show();
-
-            // Thêm các tab vào TabControl
-            tabControl.TabPages.AddRange(new TabPage[] {
-                tabBan,
-                tabMenu,
-                tabPhaChe,
-                // tabDonHang
-            });
+            // Thêm tab vào TabControl
+            tabControl.TabPages.Add(tabMenu);
 
             // Thêm TabControl vào form
             this.Controls.Add(tabControl);

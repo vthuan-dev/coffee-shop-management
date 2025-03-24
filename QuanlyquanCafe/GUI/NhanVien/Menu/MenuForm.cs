@@ -1280,7 +1280,7 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                 }
 
                 // Kiểm tra xem bàn đã có hóa đơn chưa
-                string checkBillQuery = "SELECT id FROM Bill WHERE TableID = @tableId AND Status = 0";
+                string checkBillQuery = "SELECT id FROM Bill WHERE TableID = @TableID AND Status = 0";
                 DataTable billCheck = DataProvider.Instance.ExecuteQuery(checkBillQuery, new object[] { currentTableID });
                 
                 int billId;
@@ -1303,7 +1303,7 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                         foreach (TempOrderItem item in tempOrderItems)
                         {
                             // Kiểm tra xem món đã tồn tại trong hóa đơn chưa
-                            string checkMenuQuery = "SELECT id, Quantity FROM BillInfo WHERE BillID = @billId AND MenuID = @menuId";
+                            string checkMenuQuery = "SELECT id, Quantity FROM BillInfo WHERE BillID = @BillID AND MenuID = @MenuID";
                             DataTable menuCheck = DataProvider.Instance.ExecuteQuery(checkMenuQuery, 
                                                                                    new object[] { billId, item.MenuID });
                             
@@ -1314,13 +1314,13 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                                 int existingQty = Convert.ToInt32(menuCheck.Rows[0]["Quantity"]);
                                 int newQty = existingQty + item.Quantity;
                                 
-                                string updateQuery = "UPDATE BillInfo SET Quantity = @quantity WHERE id = @id";
+                                string updateQuery = "UPDATE BillInfo SET Quantity = @Quantity WHERE id = @ID";
                                 DataProvider.Instance.ExecuteNonQuery(updateQuery, new object[] { newQty, existingId });
                             }
                             else
                             {
                                 // Nếu món chưa tồn tại, thêm mới
-                                string insertBillInfoQuery = "INSERT INTO BillInfo (BillID, MenuID, Quantity) VALUES (@billId, @menuId, @quantity)";
+                                string insertBillInfoQuery = "INSERT INTO BillInfo (BillID, MenuID, Quantity) VALUES (@BillID, @MenuID, @Quantity)";
                                 DataProvider.Instance.ExecuteNonQuery(insertBillInfoQuery, 
                                                                     new object[] { billId, item.MenuID, item.Quantity });
                             }
@@ -1328,14 +1328,13 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                     }
                     else
                     {
-                        // Nếu không thêm vào hóa đơn hiện tại, thoát khỏi phương thức
                         return;
                     }
                 }
                 else
                 {
                     // Tạo hóa đơn mới
-                    string insertBillQuery = "INSERT INTO Bill (TableID, CheckInDate, Status, CustomerLeft) OUTPUT INSERTED.id VALUES (@tableId, GETDATE(), 0, 1)";
+                    string insertBillQuery = "INSERT INTO Bill (TableID, CheckInDate, Status, CustomerLeft) OUTPUT INSERTED.id VALUES (@TableID, GETDATE(), 0, 1)";
                     object result = DataProvider.Instance.ExecuteScalar(insertBillQuery, new object[] { currentTableID });
                     
                     if (result != null)
@@ -1346,13 +1345,13 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                         // Thêm từng món vào hóa đơn mới
                         foreach (TempOrderItem item in tempOrderItems)
                         {
-                            string insertBillInfoQuery = "INSERT INTO BillInfo (BillID, MenuID, Quantity) VALUES (@billId, @menuId, @quantity)";
+                            string insertBillInfoQuery = "INSERT INTO BillInfo (BillID, MenuID, Quantity) VALUES (@BillID, @MenuID, @Quantity)";
                             DataProvider.Instance.ExecuteNonQuery(insertBillInfoQuery, 
-                                                                new object[] { billId, item.MenuID, item.Quantity });
+                                                                    new object[] { billId, item.MenuID, item.Quantity });
                         }
                         
-                        // CHỈ cập nhật trạng thái bàn ở đây sau khi đã tạo hóa đơn thành công
-                        string updateTableQuery = "UPDATE TableFacility SET Status = N'Có người' WHERE id = @tableId";
+                        // Cập nhật trạng thái bàn
+                        string updateTableQuery = "UPDATE TableFacility SET Status = N'Có người' WHERE id = @TableID";
                         DataProvider.Instance.ExecuteNonQuery(updateTableQuery, new object[] { currentTableID });
                     }
                     else
