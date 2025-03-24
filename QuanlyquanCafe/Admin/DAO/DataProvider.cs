@@ -14,7 +14,7 @@ namespace QuanlyquanCafe.Admin.DAO
 
 
 
-        private string connStr = "Data Source=localhost;Initial Catalog=RestaurantManagement;User ID=sa;Password=0706871283;TrustServerCertificate=True";
+        private string connStr = @"Data Source=localhost;Initial Catalog=RestaurantManagement;User ID=sa;Password=0706871283;TrustServerCertificate=True";
 
         public static DataProvider Instance { 
             get { if (instance == null) instance = new DataProvider(); return DataProvider.instance; } 
@@ -31,7 +31,7 @@ namespace QuanlyquanCafe.Admin.DAO
                 SqlCommand cmd = new SqlCommand(query, conn);
                 if (parameter != null)
                 {
-                    string[] listPara = query.Split(' ');
+                    string[] listPara = query.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
                     int i = 0;
                     foreach (string item in listPara)
                     {
@@ -56,19 +56,21 @@ namespace QuanlyquanCafe.Admin.DAO
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(query, conn);
+
                 if (parameter != null)
                 {
-                    string[] listPara = query.Split(' ');
+                    string[] listPara = query.Split(new char[] { ' ', '(', ')', ',' }, StringSplitOptions.RemoveEmptyEntries);
                     int i = 0;
                     foreach (string item in listPara)
                     {
-                        if (item.Contains('@'))
+                        if (item.StartsWith("@"))
                         {
                             cmd.Parameters.AddWithValue(item, parameter[i]);
                             i++;
                         }
                     }
                 }
+
                 data = cmd.ExecuteNonQuery();
                 conn.Close();
             }

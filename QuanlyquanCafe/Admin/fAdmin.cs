@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using ComboBox = System.Windows.Forms.ComboBox;
 //using QuanlyquanCafe.Admin.Subform;
 
@@ -22,12 +24,42 @@ namespace QuanlyquanCafe.Admin
         BindingSource menuList = new BindingSource();
         BindingSource facilityList = new BindingSource();
         BindingSource accountList = new BindingSource();
+
+        private bool dragging = false;
+        private Point dragCursorPoint;
+        private Point dragFormPoint;
         public fAdmin()
         {
             InitializeComponent();
+
+            this.MouseDown += new MouseEventHandler(fAdmin_MouseDown);
+            this.MouseMove += new MouseEventHandler(fAdmin_MouseMove);
+            this.MouseUp += new MouseEventHandler(fAdmin_MouseUp);
+
             //LoadAccountList();
             this.Load += (s, e) => mdiProp();
             Loading();
+        }
+
+        private void fAdmin_MouseDown(object sender, MouseEventArgs e)
+        {
+            dragging = true;
+            dragCursorPoint = Cursor.Position;
+            dragFormPoint = this.Location;
+        }
+
+        private void fAdmin_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (dragging)
+            {
+                Point diff = Point.Subtract(Cursor.Position, new Size(dragCursorPoint));
+                this.Location = Point.Add(dragFormPoint, new Size(diff));
+            }
+        }
+
+        private void fAdmin_MouseUp(object sender, MouseEventArgs e)
+        {
+            dragging = false;
         }
 
         void Loading() {
@@ -78,7 +110,8 @@ namespace QuanlyquanCafe.Admin
 
         void LoadListBillByDate(DateTime checkIn, DateTime checkOut)
         {
-            dtgvBill.DataSource = BillDAO.Instance.GetListBillByDate(checkIn, checkOut);
+            dtgvBill.DataSource = BillDAO.Instance.GetListBillByDateAndPage(checkIn, checkOut, 1);
+            txbPageBill.Text = "1";
         }
 
         void LoadMenuList()
@@ -107,6 +140,13 @@ namespace QuanlyquanCafe.Admin
         void LoadAccountList()
         {
             accountList.DataSource = AccountDAO.Instance.GetListAccount();
+            dtgvStaff.Columns["Id"].Visible = false;
+            dtgvStaff.Columns["PassWord"].Visible = false;
+            //dtgvStaff.Columns["FullName"].Visible = false;
+
+            dtgvStaff.Columns["FullName"].HeaderText = "Tên người dùng";
+            dtgvStaff.Columns["Role"].HeaderText = "Chức vụ";
+            dtgvStaff.Columns["Phone"].HeaderText = "Số điện thoại";
         }
 
         void AddMenuBinding()
@@ -129,6 +169,8 @@ namespace QuanlyquanCafe.Admin
         {
             txbStaffID.DataBindings.Add(new Binding("Text", dtgvStaff.DataSource, "Id", true, DataSourceUpdateMode.Never));
             txbStaffName.DataBindings.Add(new Binding("Text", dtgvStaff.DataSource, "FullName", true, DataSourceUpdateMode.Never));
+            txbStaffPhone.DataBindings.Add(new Binding("Text", dtgvStaff.DataSource, "Phone", true, DataSourceUpdateMode.Never));
+            txbStaffEmail.DataBindings.Add(new Binding("Text", dtgvStaff.DataSource, "Email", true, DataSourceUpdateMode.Never));
         }
 
         void LoadCategoryIntoCombobox(ComboBox cb)
@@ -199,6 +241,12 @@ namespace QuanlyquanCafe.Admin
         List<Facility> SearchFacName(string name)
         {
             List<Facility> listFac = FacilityDAO.Instance.SearchFacByName(name);
+            return listFac;
+        }
+
+        List<Account> SearchStaffName(string name)
+        {
+            List<Account> listFac = AccountDAO.Instance.SearchEmployeeByName(name);
             return listFac;
         }
 
@@ -367,13 +415,13 @@ namespace QuanlyquanCafe.Admin
 
                         switch (role)
                         {
-                            case "Admin":
+                            case "Quản trị":
                                 cbxStaffRole.SelectedIndex = 0;
                                 break;
-                            case "Waiter":
+                            case "Pha chế":
                                 cbxStaffRole.SelectedIndex = 1;
                                 break;
-                            case "Manager":
+                            case "Thu ngân":
                                 cbxStaffRole.SelectedIndex = 2;
                                 break;
                         }
@@ -505,14 +553,111 @@ namespace QuanlyquanCafe.Admin
             facilityList.DataSource = SearchFacName(txbFacSearch.Text);
         }
 
+        private void btnStaffAdd_Click_1(object sender, EventArgs e)
+        {
+            string FullName = txbStaffName.Text;
+            string Role = cbxStaffRole.SelectedItem.ToString();  // Đảm bảo đây là một giá trị hợp lệ
+            string Phone = txbStaffPhone.Text;
+            string Email = txbStaffEmail.Text;
 
+            if (AccountDAO.Instance.AddNewItem(Role, FullName, Phone, Email))
+            {
+                MessageBox.Show("Thêm người dùng thành công");
+                LoadAccountList();
+            }
+            else
+            {
+                MessageBox.Show("Có lỗi khi thêm người dùng");
+            }
+        }
 
+        private void btnViewEdit_Click(object sender, EventArgs e)
+        {
+            int id = Convert.ToInt32(txbStaffID.Text);
+            string FullName = txbStaffName.Text;
+            string Role = cbxStaffRole.SelectedItem.ToString();  // Đảm bảo đây là một giá trị hợp lệ
+            string Phone = txbStaffPhone.Text;
+            string Email = txbStaffEmail.Text;
+
+            if (AccountDAO.Instance.UpdateItem(id, Role, FullName, Phone, Email))
+            {
+                MessageBox.Show("Sửa người dùng thành công");
+                LoadAccountList();
+            }
+            else
+            {
+                MessageBox.Show("Có lỗi khi sửa người dùng");
+            }
+        }
+
+        private void btnStaffDel_Click(object sender, EventArgs e)
+        {
+            int id = Convert.ToInt32(txbStaffID.Text);
+
+            if (AccountDAO.Instance.DeleteItem(id))
+            {
+                MessageBox.Show("Xóa người dùng thành công");
+                LoadAccountList();
+            }
+            else
+            {
+                MessageBox.Show("Có lỗi khi xóa người dùng");
+            }
+        }
+
+        private void btnStaffSearch_Click(object sender, EventArgs e)
+        {
+            accountList.DataSource = SearchStaffName(txbStaffSearch.Text);
+        }
+
+        private void btnFirst_Click(object sender, EventArgs e)
+        {
+            txbPageBill.Text = "1";
+        }
+
+        private void btnLast_Click(object sender, EventArgs e)
+        {
+            int sumRecord = BillDAO.Instance.GetNumBillByDate(dateBill1.Value, dateBill2.Value);
+            int lastPage = sumRecord / 10;
+            if (sumRecord % 10 != 0)
+            {
+                lastPage++;
+            }
+
+            txbPageBill.Text = lastPage.ToString();
+        }
+
+        private void txbPageBill_TextChanged(object sender, EventArgs e)
+        {
+            dtgvBill.DataSource = BillDAO.Instance.GetListBillByDateAndPage(dateBill1.Value, dateBill2.Value, Convert.ToInt32(txbPageBill.Text));
+        }
+
+        private void btnPrev_Click(object sender, EventArgs e)
+        {
+            int page = Convert.ToInt32(txbPageBill.Text);
+
+            if (page > 1)
+            {
+                page--;
+            }
+
+            txbPageBill.Text = page.ToString();
+        }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            int page = Convert.ToInt32(txbPageBill.Text);
+            int sumRecord = BillDAO.Instance.GetNumBillByDate(dateBill1.Value, dateBill2.Value);
+            if (page <= sumRecord/10)
+            {
+                page++;
+            }
+
+            txbPageBill.Text = page.ToString();
+        }
 
         #endregion
 
-        private void button1_Click(object sender, EventArgs e)
-        {
 
-        }
     }
 }

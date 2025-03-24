@@ -35,7 +35,7 @@ namespace QuanlyquanCafe.Admin.DAO
         public List<Account> GetListAccount()
         {
             List<Account> listAcc = new List<Account>();
-            string query = "SELECT uid, UserName, FullName, Role, Phone, Email FROM Users";
+            string query = "SELECT * FROM Users";
             DataTable data = DataProvider.Instance.ExecuteQuery(query);
             foreach (DataRow dr in data.Rows)
             {
@@ -59,5 +59,59 @@ namespace QuanlyquanCafe.Admin.DAO
                 return "No role found";
             }
         }
-    }  
+
+        public bool AddNewItem(string Role, string FullName, string Phone, string Email)
+        {
+            string defaultPassword = "1";  // Đặt mật khẩu mặc định
+            string query = "Insert into Users (Password, Role, FullName, Phone, Email) Values (@Password, @Role, @FullName, @Phone, @Email)";
+
+            // Khai báo tham số
+            object[] parameters = new object[] { defaultPassword, Role, FullName, Phone, Email };
+
+            // Gọi ExecuteNonQuery để thực thi câu lệnh SQL
+            int result = DataProvider.Instance.ExecuteNonQuery(query, parameters);
+
+            return result > 0;
+        }
+
+
+        public bool UpdateItem(int id, string Role, string FullName, string Phone, string Email)
+        {
+            string query = "UPDATE Users SET Role = @Role, FullName = @FullName, Phone = @Phone, Email = @Email WHERE uid = @id";
+            object[] parameters = { Role, FullName, Phone, Email, id };
+            int result = DataProvider.Instance.ExecuteNonQuery(query, parameters);
+
+            return result > 0;
+        }
+
+        public bool DeleteItem(int id)
+        {
+            string query = string.Format("Delete from Users where uid = {0}", id);
+            int result = DataProvider.Instance.ExecuteNonQuery(query);
+            return result > 0;
+        }
+
+        public List<Account> SearchEmployeeByName(string name)
+        {
+            List<Account> listEmployee = new List<Account>();
+
+            // Câu truy vấn SQL tìm kiếm nhân viên theo tên
+            string query = string.Format(
+                "SELECT * FROM Users WHERE FullName LIKE N'%{0}%'",
+                name);
+
+            // Thực thi câu truy vấn và lấy dữ liệu
+            DataTable data = DataProvider.Instance.ExecuteQuery(query);
+
+            // Duyệt qua từng dòng kết quả và thêm vào danh sách nhân viên
+            foreach (DataRow dr in data.Rows)
+            {
+                Account emp = new Account(dr); 
+                listEmployee.Add(emp);
+            }
+
+            return listEmployee;
+        }
+
+    }
 }

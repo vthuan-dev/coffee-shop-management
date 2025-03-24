@@ -197,9 +197,19 @@ namespace QuanlyquanCafe.Admin.DAO
             }
         }
 
-        public DataTable GetListBillByDate(DateTime checkIn, DateTime checkOut)
+        //public DataTable GetListBillByDate(DateTime checkIn, DateTime checkOut)
+        //{
+        //    return DataProvider.Instance.ExecuteQuery("exec Bill_GetListBillByDate @checkIn , @checkOut", new object[] { checkIn, checkOut});
+        //}
+
+        public int  GetNumBillByDate(DateTime checkIn, DateTime checkOut)
         {
-            return DataProvider.Instance.ExecuteQuery("exec Bill_GetListBillByDate @checkIn , @checkOut", new object[] { checkIn, checkOut});
+            return (int)DataProvider.Instance.ExecuteScalar("exec Bill_GetNumBillByDate @checkIn , @checkOut", new object[] { checkIn, checkOut });
+        }
+
+        public DataTable GetListBillByDateAndPage(DateTime checkIn, DateTime checkOut, int pageNum)
+        {
+            return DataProvider.Instance.ExecuteQuery("exec Bill_GetListBillByDateAndPage @checkIn , @checkOut, @page", new object[] { checkIn, checkOut, pageNum });
         }
 
         public void DeleteBillByTableID(int id)
