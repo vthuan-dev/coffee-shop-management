@@ -15,6 +15,7 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
 {
     public partial class MenuForm : Form
     {
+        private MainNhanVienForm mainForm;
         private int? currentTableID = null;
         private int? currentBillID = null;
         //private FlowLayoutPanel flpTables;
@@ -1783,6 +1784,17 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                 Console.WriteLine("Exception details: " + ex.ToString());
                 return -1;
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Hide(); // Ẩn form hiện tại (FormLogin)
+
+            Form1 loginForm = new Form1();
+            loginForm.ShowDialog(); 
+
+            this.Close();
+
         }
     }
 

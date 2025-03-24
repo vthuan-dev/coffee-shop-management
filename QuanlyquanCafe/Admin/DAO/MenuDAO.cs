@@ -69,7 +69,7 @@ namespace QuanlyquanCafe.Admin.DAO
         public List<MenuDTO> SearchMenuByName(string name)
         {
             List<MenuDTO> listMenu = new List<MenuDTO>();
-            string query = string.Format("SELECT m.id, m.Name [Tên], Price [Giá], mc.Name [Loại], CategoryID" +
+            string query = string.Format("SELECT m.id, m.Name [Tên], Price [Giá], mc.Name [Loại], CategoryID " +
                 "FROM Menu as m, MenuCategory as mc\r\nwhere m.CategoryID = mc.id and m.Name like N'%{0}%'", name);
             DataTable data = DataProvider.Instance.ExecuteQuery(query);
             foreach (DataRow dr in data.Rows)

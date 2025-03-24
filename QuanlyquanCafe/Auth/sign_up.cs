@@ -92,6 +92,17 @@ namespace QuanlyquanCafe.Auth
             textBoxPhone.Clear();
             textBoxEmail.Clear();
         }
+
+        private void linkLabel2_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+
+            this.Hide(); // Ẩn form hiện tại (FormLogin)
+
+            Form1 loginForm = new Form1();
+            loginForm.ShowDialog(); // Mở form đăng ký dưới dạng hộp thoại
+
+            this.Close();
+        }
     }
 }
 

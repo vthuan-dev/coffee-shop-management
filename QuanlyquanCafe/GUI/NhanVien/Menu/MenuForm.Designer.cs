@@ -217,9 +217,9 @@
             // 
             // btnCustomerLeft
             // 
-            this.btnCustomerLeft.Location = new System.Drawing.Point(833, 7);
+            this.btnCustomerLeft.Location = new System.Drawing.Point(828, 10);
             this.btnCustomerLeft.Name = "btnCustomerLeft";
-            this.btnCustomerLeft.Size = new System.Drawing.Size(169, 30);
+            this.btnCustomerLeft.Size = new System.Drawing.Size(170, 29);
             this.btnCustomerLeft.TabIndex = 5;
             this.btnCustomerLeft.Text = "Khách đã rời";
             this.btnCustomerLeft.Click += new System.EventHandler(this.BtnCustomerLeft_Click);
@@ -331,7 +331,7 @@
             this.tabPage2.Controls.Add(this.flpTables2);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(952, 169);
+            this.tabPage2.Size = new System.Drawing.Size(1275, 169);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Tầng 2";
             // 
@@ -342,7 +342,7 @@
             this.flpTables2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpTables2.Location = new System.Drawing.Point(0, 0);
             this.flpTables2.Name = "flpTables2";
-            this.flpTables2.Size = new System.Drawing.Size(952, 169);
+            this.flpTables2.Size = new System.Drawing.Size(1275, 169);
             this.flpTables2.TabIndex = 0;
             // 
             // tabPage3
@@ -350,7 +350,7 @@
             this.tabPage3.Controls.Add(this.flpTables3);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(952, 169);
+            this.tabPage3.Size = new System.Drawing.Size(1275, 169);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Tầng 3";
             // 
@@ -361,7 +361,7 @@
             this.flpTables3.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpTables3.Location = new System.Drawing.Point(0, 0);
             this.flpTables3.Name = "flpTables3";
-            this.flpTables3.Size = new System.Drawing.Size(952, 169);
+            this.flpTables3.Size = new System.Drawing.Size(1275, 169);
             this.flpTables3.TabIndex = 0;
             // 
             // tabPage4
@@ -369,7 +369,7 @@
             this.tabPage4.Controls.Add(this.flpTables4);
             this.tabPage4.Location = new System.Drawing.Point(4, 25);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(952, 169);
+            this.tabPage4.Size = new System.Drawing.Size(1275, 169);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Tầng 4";
             // 
@@ -383,7 +383,7 @@
             this.flpTables4.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpTables4.Location = new System.Drawing.Point(0, 0);
             this.flpTables4.Name = "flpTables4";
-            this.flpTables4.Size = new System.Drawing.Size(952, 169);
+            this.flpTables4.Size = new System.Drawing.Size(1275, 169);
             this.flpTables4.TabIndex = 0;
             // 
             // lblTable

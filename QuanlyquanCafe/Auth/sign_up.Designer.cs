@@ -47,6 +47,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.checkBoxPasswd = new System.Windows.Forms.CheckBox();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -150,9 +151,9 @@
             this.cBoxRole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cBoxRole.FormattingEnabled = true;
             this.cBoxRole.Items.AddRange(new object[] {
-            "Quản Trị",
-            "Pha Chế",
-            "Thu Ngân"});
+            "Quản rrị",
+            "Pha chế",
+            "Thu ngân"});
             this.cBoxRole.Location = new System.Drawing.Point(126, 109);
             this.cBoxRole.Name = "cBoxRole";
             this.cBoxRole.Size = new System.Drawing.Size(288, 24);
@@ -250,12 +251,24 @@
             this.checkBoxPasswd.UseVisualStyleBackColor = true;
             this.checkBoxPasswd.CheckedChanged += new System.EventHandler(this.checkBoxPasswd_CheckedChanged);
             // 
+            // linkLabel2
+            // 
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Location = new System.Drawing.Point(544, 364);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(124, 16);
+            this.linkLabel2.TabIndex = 25;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "Quay về đăng nhập";
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked_1);
+            // 
             // sign_up
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.AppWorkspace;
             this.ClientSize = new System.Drawing.Size(852, 428);
+            this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.checkBoxPasswd);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.tableLayoutPanel2);
@@ -325,5 +338,6 @@
         private System.Windows.Forms.ComboBox cBoxRole;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox checkBoxPasswd;
+        private System.Windows.Forms.LinkLabel linkLabel2;
     }
 }

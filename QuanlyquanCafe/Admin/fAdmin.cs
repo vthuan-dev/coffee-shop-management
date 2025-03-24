@@ -257,15 +257,20 @@ namespace QuanlyquanCafe.Admin
             LoadListBillByDate(dateBill1.Value, dateBill2.Value);
         }
 
-        private void btnMenuView_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
             LoadMenuList();
         }
 
-        private void btnFacView_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
-            LoadFacilityList(); 
-        }   
+            LoadAccountList();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            LoadFacilityList();
+        }
 
         private void txbMenuID_TextChanged(object sender, EventArgs e)
         {
@@ -656,8 +661,18 @@ namespace QuanlyquanCafe.Admin
             txbPageBill.Text = page.ToString();
         }
 
+
+
         #endregion
 
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            this.Hide(); // Ẩn form hiện tại (FormLogin)
 
+            Form1 loginForm = new Form1();
+            loginForm.ShowDialog(); // Mở form đăng ký dưới dạng hộp thoại
+
+            this.Close();
+        }
     }
 }
