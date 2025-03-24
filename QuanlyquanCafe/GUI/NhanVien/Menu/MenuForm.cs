@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using System.Drawing.Printing;
 using System.Data.SqlClient;
+using System.Transactions;
 
 namespace QuanlyquanCafe.GUI.NhanVien.Menu
 {
@@ -81,6 +82,8 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             {
                 btnCreateBill.Click += BtnCreateBill_Click;
             }
+
+            SyncTableStatus(); // Thêm vào đây
         }
 
         private void SetupMenuTable()
@@ -303,22 +306,6 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                             string tableName = row["Name"].ToString();
                             string status = row["Status"].ToString();
                             bool hasActiveBill = Convert.ToBoolean(row["HasActiveBill"]);
-
-                            // Đồng bộ trạng thái bàn với hóa đơn
-                            if (hasActiveBill && status != "Có người")
-                            {
-                                // Cập nhật trạng thái bàn thành "Có người" nếu có hóa đơn đang hoạt động
-                                string updateQuery = "UPDATE TableFacility SET Status = N'Có người' WHERE id = " + tableId;
-                                DataProvider.Instance.ExecuteNonQuery(updateQuery);
-                                status = "Có người";
-                            }
-                            else if (!hasActiveBill && status == "Có người")
-                            {
-                                // Cập nhật trạng thái bàn thành "Trống" nếu không có hóa đơn đang hoạt động
-                                string updateQuery = "UPDATE TableFacility SET Status = N'Trống' WHERE id = " + tableId;
-                                DataProvider.Instance.ExecuteNonQuery(updateQuery);
-                                status = "Trống";
-                            }
 
                             Button btn = new Button
                             {
@@ -1279,100 +1266,71 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                     MessageBox.Show("Vui lòng chọn bàn trước khi tạo hóa đơn!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                
+
                 if (tempOrderItems.Count == 0)
                 {
                     MessageBox.Show("Vui lòng thêm ít nhất một món vào đơn hàng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // Kiểm tra xem bàn đã có hóa đơn chưa
-                string checkBillQuery = "SELECT id FROM Bill WHERE TableID = " + currentTableID + " AND Status = 0";
-                DataTable billCheck = DataProvider.Instance.ExecuteQuery(checkBillQuery);
-                
-                int billId;
-                
-                if (billCheck.Rows.Count > 0)
+                // Tính tổng tiền từ các món đã chọn
+                decimal totalAmount = tempOrderItems.Sum(item => item.Total);
+
+                // Tạo hóa đơn mới với tham số được đặt tên rõ ràng
+                string insertBillQuery = @"
+                    INSERT INTO Bill (TableID, CheckInDate, Status, Discount, TotalPrice, CustomerLeft) 
+                    OUTPUT INSERTED.id 
+                    VALUES (@TableID, GETDATE(), 0, 0, @TotalPrice, 1)";
+
+                // Tạo SqlParameter để xử lý tham số một cách chính xác
+                SqlParameter[] parameters = new SqlParameter[]
                 {
-                    // Nếu đã có hóa đơn, hỏi người dùng có muốn thêm vào hóa đơn hiện tại không
-                    DialogResult dialogResult = MessageBox.Show(
-                        "Bàn này đã có hóa đơn. Bạn có muốn thêm các món vào hóa đơn hiện tại không?", 
-                        "Xác nhận", 
-                        MessageBoxButtons.YesNo, 
-                        MessageBoxIcon.Question);
-                        
-                    if (dialogResult == DialogResult.Yes)
-                    {
-                        billId = Convert.ToInt32(billCheck.Rows[0]["id"]);
-                        currentBillID = billId;
-                        
-                        // Thêm từng món vào hóa đơn hiện tại
-                        foreach (TempOrderItem item in tempOrderItems)
-                        {
-                            // Kiểm tra xem món đã tồn tại trong hóa đơn chưa
-                            string checkMenuQuery = "SELECT id, Quantity FROM BillInfo WHERE BillID = " + billId + " AND MenuID = " + item.MenuID;
-                            DataTable menuCheck = DataProvider.Instance.ExecuteQuery(checkMenuQuery);
-                            
-                            if (menuCheck.Rows.Count > 0)
-                            {
-                                // Nếu món đã tồn tại, cập nhật số lượng
-                                int existingId = Convert.ToInt32(menuCheck.Rows[0]["id"]);
-                                int existingQty = Convert.ToInt32(menuCheck.Rows[0]["Quantity"]);
-                                int newQty = existingQty + item.Quantity;
-                                
-                                string updateQuery = "UPDATE BillInfo SET Quantity = " + newQty + " WHERE id = " + existingId;
-                                DataProvider.Instance.ExecuteNonQuery(updateQuery);
-                            }
-                            else
-                            {
-                                // Nếu món chưa tồn tại, thêm mới
-                                string insertBillInfoQuery = "INSERT INTO BillInfo (BillID, MenuID, Quantity) VALUES (" + billId + ", " + item.MenuID + ", " + item.Quantity + ")";
-                                DataProvider.Instance.ExecuteNonQuery(insertBillInfoQuery);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                else
+                    new SqlParameter("@TableID", SqlDbType.Int) { Value = currentTableID },
+                    new SqlParameter("@TotalPrice", SqlDbType.Float) { Value = (float)totalAmount }
+                };
+
+                // Thực hiện thêm hóa đơn và lấy ID mới
+                DataTable result = DataProvider.Instance.ExecuteQueryWithParameters(insertBillQuery, parameters);
+                
+                if (result != null && result.Rows.Count > 0)
                 {
-                    // Tạo hóa đơn mới
-                    string insertBillQuery = "INSERT INTO Bill (TableID, CheckInDate, Status, CustomerLeft) OUTPUT INSERTED.id VALUES (" + currentTableID + ", GETDATE(), 0, 1)";
-                    object result = DataProvider.Instance.ExecuteScalar(insertBillQuery);
-                    
-                    if (result != null)
+                    int newBillId = Convert.ToInt32(result.Rows[0][0]);
+                    currentBillID = newBillId;
+
+                    // Thêm chi tiết từng món vào BillInfo
+                    foreach (TempOrderItem item in tempOrderItems)
                     {
-                        billId = Convert.ToInt32(result);
-                        currentBillID = billId;
-                        
-                        // Thêm từng món vào hóa đơn mới
-                        foreach (TempOrderItem item in tempOrderItems)
+                        string insertBillInfoQuery = @"
+                            INSERT INTO BillInfo (BillID, MenuID, Quantity) 
+                            VALUES (@BillID, @MenuID, @Quantity)";
+
+                        SqlParameter[] billInfoParams = new SqlParameter[]
                         {
-                            string insertBillInfoQuery = "INSERT INTO BillInfo (BillID, MenuID, Quantity) VALUES (" + billId + ", " + item.MenuID + ", " + item.Quantity + ")";
-                            DataProvider.Instance.ExecuteNonQuery(insertBillInfoQuery);
-                        }
-                        
-                        // Cập nhật trạng thái bàn
-                        string updateTableQuery = "UPDATE TableFacility SET Status = N'Có người' WHERE id = " + currentTableID;
-                        DataProvider.Instance.ExecuteNonQuery(updateTableQuery);
+                            new SqlParameter("@BillID", SqlDbType.Int) { Value = newBillId },
+                            new SqlParameter("@MenuID", SqlDbType.Int) { Value = item.MenuID },
+                            new SqlParameter("@Quantity", SqlDbType.Int) { Value = item.Quantity }
+                        };
+
+                        DataProvider.Instance.ExecuteQueryWithParameters(insertBillInfoQuery, billInfoParams);
                     }
-                    else
+
+                    // Cập nhật trạng thái bàn
+                    string updateTableQuery = "UPDATE TableFacility SET Status = N'Có người' WHERE id = @TableID";
+                    SqlParameter[] updateParams = new SqlParameter[]
                     {
-                        MessageBox.Show("Không thể tạo hóa đơn mới!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+                        new SqlParameter("@TableID", SqlDbType.Int) { Value = currentTableID }
+                    };
+
+                    DataProvider.Instance.ExecuteQueryWithParameters(updateTableQuery, updateParams);
+
+                    // Làm mới hiển thị
+                    tempOrderItems.Clear();
+                    LoadBillDetails(newBillId);
+                    LoadActiveBills();
+                    LoadTables();
+
+                    MessageBox.Show("Đã tạo hóa đơn thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                
-                // Làm mới danh sách hóa đơn và bàn
-                tempOrderItems.Clear();
-                LoadBillDetails(billId);
-                LoadActiveBills();
-                LoadTables();
-                
-                MessageBox.Show("Đã tạo hóa đơn thành công!", 
-                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -1421,18 +1379,22 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                 // Xóa dữ liệu cũ
                 dgvOrderDetails.Rows.Clear();
 
-                // Truy vấn để lấy chi tiết hóa đơn
+                // Truy vấn để lấy chi tiết hóa đơn và tính tổng tiền
                 string query = @"
-                    SELECT bi.id, m.id as MenuID, m.Name as MenuName, bi.Quantity, 
-                           m.Price, (bi.Quantity * m.Price) as Total,
-                           f.Name as TableName, f.Location as TableLocation
+                    SELECT 
+                        bi.id,
+                        m.id as MenuID,
+                        m.Name as MenuName,
+                        bi.Quantity,
+                        m.Price,
+                        (bi.Quantity * m.Price) as Total
                     FROM BillInfo bi
                     JOIN Menu m ON bi.MenuID = m.id
-                    JOIN Bill b ON bi.BillID = b.id
-                    JOIN Facility f ON b.TableID = f.id
-                    WHERE bi.BillID = " + billId;
+                    WHERE bi.BillID = @billId";
 
-                DataTable data = DataProvider.Instance.ExecuteQuery(query);
+                DataTable data = DataProvider.Instance.ExecuteQuery(query, new object[] { billId });
+
+                decimal totalAmount = 0;
 
                 // Thêm dữ liệu vào DataGridView
                 foreach (DataRow row in data.Rows)
@@ -1440,21 +1402,26 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                     int rowIndex = dgvOrderDetails.Rows.Add();
                     DataGridViewRow gridRow = dgvOrderDetails.Rows[rowIndex];
 
-                    gridRow.Cells[0].Value = row["MenuID"]; // ID món
-                    gridRow.Cells[1].Value = row["MenuName"]; // Tên món
-                    gridRow.Cells[2].Value = row["Quantity"]; // Số lượng
-                    gridRow.Cells[3].Value = string.Format("{0:N0}", row["Price"]); // Đơn giá
-                    gridRow.Cells[4].Value = string.Format("{0:N0}", row["Total"]); // Thành tiền
-                    
-                    // Thông tin bàn (nếu có cột này)
-                    if (dgvOrderDetails.Columns.Count > 5)
-                    {
-                        gridRow.Cells[5].Value = $"{row["TableName"]} - {row["TableLocation"]}";
-                    }
+                    gridRow.Cells[0].Value = row["MenuID"];
+                    gridRow.Cells[1].Value = row["MenuName"];
+                    gridRow.Cells[2].Value = row["Quantity"];
+                    gridRow.Cells[3].Value = string.Format("{0:N0} VNĐ", row["Price"]);
+                    gridRow.Cells[4].Value = string.Format("{0:N0} VNĐ", row["Total"]);
+
+                    // Cộng dồn tổng tiền
+                    totalAmount += Convert.ToDecimal(row["Total"]);
                 }
 
-                // Cập nhật tổng tiền
-                UpdateTotal();
+                // Cập nhật tổng tiền vào label và database
+                lblTotal.Text = string.Format("Tổng: {0:N0} VNĐ", totalAmount);
+
+                // Cập nhật TotalPrice trong bảng Bill
+                string updateTotalQuery = @"
+                    UPDATE Bill 
+                    SET TotalPrice = @total 
+                    WHERE id = @billId";
+                
+                DataProvider.Instance.ExecuteNonQuery(updateTotalQuery, new object[] { totalAmount, billId });
             }
             catch (Exception ex)
             {
@@ -1484,11 +1451,22 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
         {
             try
             {
+                SyncTableStatus(); // Thêm vào đầu phương thức
+                // Làm mới danh sách bàn
                 LoadTables();
+                
+                // Làm mới danh sách hóa đơn đang hoạt động
+                LoadActiveBills();
+                
+                // Cập nhật giao diện nếu cần
+                if (tabFloors.SelectedTab != null)
+                {
+                    tabFloors.SelectedTab.Refresh();
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi làm mới trạng thái bàn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine("Lỗi khi làm mới trạng thái bàn: " + ex.Message);
             }
         }
 
@@ -1503,64 +1481,69 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
 
         private void TimerRefresh_Tick(object sender, EventArgs e)
         {
-            // Tải lại danh sách hóa đơn đang hoạt động
+            SyncTableStatus(); // Thêm vào đây
             LoadActiveBills();
         }
 
         private void BtnCustomerLeft_Click(object sender, EventArgs e)
         {
-            // Kiểm tra xem đã chọn hóa đơn nào chưa
-            if (dgvActiveBills.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Vui lòng chọn hóa đơn trước khi thực hiện thao tác này!",
-                               "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             try
             {
-                // Lấy ID hóa đơn từ hàng được chọn
+                // Kiểm tra xem đã chọn hóa đơn nào chưa
+                if (dgvActiveBills.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("Vui lòng chọn hóa đơn trước khi thực hiện thao tác này!",
+                                   "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Lấy thông tin hóa đơn được chọn
                 int billId = Convert.ToInt32(dgvActiveBills.SelectedRows[0].Cells["ID"].Value);
                 string tableName = dgvActiveBills.SelectedRows[0].Cells["TableName"].Value.ToString();
 
-                // Hiển thị hộp thoại xác nhận
                 if (MessageBox.Show($"Xác nhận khách đã rời cho hóa đơn #{billId} - Bàn: {tableName}?",
                                   "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    // Lấy TableID từ hóa đơn
-                    string getTableIdQuery = $"SELECT TableID FROM Bill WHERE id = {billId}";
-                    object tableIdObj = DataProvider.Instance.ExecuteScalar(getTableIdQuery);
-                    
-                    if (tableIdObj != null)
+                    // Lấy TableID từ Bill
+                    string getTableIdQuery = "SELECT TableID FROM Bill WHERE id = @BillId";
+                    object tableIdObj = DataProvider.Instance.ExecuteScalar(getTableIdQuery, new object[] { billId });
+
+                    if (tableIdObj != null && tableIdObj != DBNull.Value)
                     {
                         int tableId = Convert.ToInt32(tableIdObj);
-                        
-                        // Cập nhật trạng thái khách đã rời trong hóa đơn
-                        string updateBillQuery = $"UPDATE Bill SET CustomerLeft = 0 WHERE id = {billId}";
-                        
-                        // Cập nhật trạng thái bàn thành 'Trống'
-                        string updateTableQuery = $"UPDATE TableFacility SET Status = N'Trống' WHERE id = {tableId}";
-                        
-                        // Thực hiện cả hai truy vấn
-                        int billResult = DataProvider.Instance.ExecuteNonQuery(updateBillQuery);
-                        int tableResult = DataProvider.Instance.ExecuteNonQuery(updateTableQuery);
-                        
+
+                        // 1. Cập nhật trạng thái khách đã rời trong Bill
+                        string updateBillQuery = "UPDATE Bill SET CustomerLeft = 0 WHERE id = @BillId";
+                        int billResult = DataProvider.Instance.ExecuteNonQuery(updateBillQuery, new object[] { billId });
+
+                        // 2. Cập nhật trạng thái bàn thành 'Trống'
+                        string updateTableQuery = "UPDATE TableFacility SET Status = N'Trống' WHERE id = @TableId";
+                        int tableResult = DataProvider.Instance.ExecuteNonQuery(updateTableQuery, new object[] { tableId });
+
                         if (billResult > 0 && tableResult > 0)
                         {
                             MessageBox.Show("Đã cập nhật trạng thái khách hàng và bàn thành công!",
                                           "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            
-                            // Làm mới danh sách hóa đơn và bàn
-                            LoadActiveBills();
-                            LoadTables();
-                            
-                            // Nếu đang xem chi tiết hóa đơn này thì làm mới
+
+                            // Reset thông tin chi tiết nếu đang xem hóa đơn này
                             if (currentBillID == billId)
                             {
                                 dgvOrderDetails.Rows.Clear();
                                 lblTotal.Text = "Tổng: 0 VNĐ";
                                 currentBillID = null;
+                                currentTableID = null;
+
+                                if (selectedTableButton != null)
+                                {
+                                    selectedTableButton.FlatAppearance.BorderSize = 1;
+                                    selectedTableButton = null;
+                                }
+                                lblTable.Text = "Bàn:";
                             }
+
+                            // Cập nhật giao diện sau khi thành công
+                            LoadActiveBills();
+                            LoadTables();
                         }
                     }
                 }
@@ -1658,11 +1641,6 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                         lblTable.Text = "Bàn:";
                         currentTableID = null;
                     }
-                    else
-                    {
-                        MessageBox.Show("Không thể cập nhật trạng thái khách hàng hoặc bàn!",
-                                      "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
                 }
             }
             catch (Exception ex)
@@ -1678,79 +1656,79 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             // Implementation of ReserveSelectedTable method
         }
 
-        // Thêm phương thức LoadBillForTable
-        private void LoadBillForTable(int tableId)
-        {
-            try
-            {
-                // Tìm hóa đơn chưa thanh toán cho bàn này
-                string query = @"
-                    SELECT b.id, f.Name as TableName, b.CheckInDate, b.Discount 
-                    FROM Bill b 
-                    JOIN Facility f ON b.TableID = f.id
-                    WHERE b.TableID = @tableId AND b.Status = 0 AND b.CustomerLeft = 1";
+        // // Thêm phương thức LoadBillForTable
+        // private void LoadBillForTable(int tableId)
+        // {
+        //     try
+        //     {
+        //         // Tìm hóa đơn chưa thanh toán cho bàn này
+        //         string query = @"
+        //             SELECT b.id, f.Name as TableName, b.CheckInDate, b.Discount 
+        //             FROM Bill b 
+        //             JOIN Facility f ON b.TableID = f.id
+        //             WHERE b.TableID = @tableId AND b.Status = 0 AND b.CustomerLeft = 1";
                 
-                DataTable billData = DataProvider.Instance.ExecuteQuery(query, new object[] { tableId });
+        //         DataTable billData = DataProvider.Instance.ExecuteQuery(query, new object[] { tableId });
                 
-                if (billData.Rows.Count > 0)
-                {
-                    // Có hóa đơn đang mở
-                    DataRow billRow = billData.Rows[0];
-                    int billId = Convert.ToInt32(billRow["id"]);
+        //         if (billData.Rows.Count > 0)
+        //         {
+        //             // Có hóa đơn đang mở
+        //             DataRow billRow = billData.Rows[0];
+        //             int billId = Convert.ToInt32(billRow["id"]);
                     
-                    // Lưu ID hóa đơn hiện tại
-                    currentBillID = billId;
+        //             // Lưu ID hóa đơn hiện tại
+        //             currentBillID = billId;
                     
-                    // Tải chi tiết hóa đơn
-                    LoadBillDetails(billId);
-                }
-                else
-                {
-                    // Không có hóa đơn, xóa chi tiết hiện tại
-                    dgvOrderDetails.Rows.Clear();
-                    lblTotal.Text = "Tổng: 0 VNĐ";
-                    currentBillID = null;
+        //             // Tải chi tiết hóa đơn
+        //             LoadBillDetails(billId);
+        //         }
+        //         else
+        //         {
+        //             // Không có hóa đơn, xóa chi tiết hiện tại
+        //             dgvOrderDetails.Rows.Clear();
+        //             lblTotal.Text = "Tổng: 0 VNĐ";
+        //             currentBillID = null;
                     
-                    // Hiển thị thông báo tùy thuộc vào trạng thái của bàn
-                    string statusQuery = "SELECT Status FROM TableFacility WHERE id = @tableId";
-                    object statusObj = DataProvider.Instance.ExecuteScalar(statusQuery, new object[] { tableId });
+        //             // Hiển thị thông báo tùy thuộc vào trạng thái của bàn
+        //             string statusQuery = "SELECT Status FROM TableFacility WHERE id = @tableId";
+        //             object statusObj = DataProvider.Instance.ExecuteScalar(statusQuery, new object[] { tableId });
                     
-                    if (statusObj != null && statusObj.ToString() == "Có người")
-                    {
-                        // Bàn có người nhưng không có hóa đơn
-                        if (MessageBox.Show("Bàn này có người nhưng chưa có hóa đơn. Bạn có muốn tạo hóa đơn mới không?",
-                                           "Tạo hóa đơn", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            // Tạo hóa đơn mới
-                            CreateNewBill(tableId);
-                        }
-                    }
-                    else if (statusObj != null && statusObj.ToString() == "Trống")
-                    {
-                        // Bàn trống
-                        if (MessageBox.Show("Bàn này đang trống. Bạn có muốn đặt bàn và tạo hóa đơn mới không?",
-                                           "Đặt bàn", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            // Đặt bàn và tạo hóa đơn mới
-                            string updateQuery = "UPDATE TableFacility SET Status = N'Có người' WHERE id = @tableId";
-                            DataProvider.Instance.ExecuteNonQuery(updateQuery, new object[] { tableId });
+        //             if (statusObj != null && statusObj.ToString() == "Có người")
+        //             {
+        //                 // Bàn có người nhưng không có hóa đơn
+        //                 if (MessageBox.Show("Bàn này có người nhưng chưa có hóa đơn. Bạn có muốn tạo hóa đơn mới không?",
+        //                                    "Tạo hóa đơn", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+        //                 {
+        //                     // Tạo hóa đơn mới
+        //                     CreateNewBill(tableId);
+        //                 }
+        //             }
+        //             else if (statusObj != null && statusObj.ToString() == "Trống")
+        //             {
+        //                 // Bàn trống
+        //                 if (MessageBox.Show("Bàn này đang trống. Bạn có muốn đặt bàn và tạo hóa đơn mới không?",
+        //                                    "Đặt bàn", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+        //                 {
+        //                     // Đặt bàn và tạo hóa đơn mới
+        //                     string updateQuery = "UPDATE TableFacility SET Status = N'Có người' WHERE id = @tableId";
+        //                     DataProvider.Instance.ExecuteNonQuery(updateQuery, new object[] { tableId });
                             
-                            // Làm mới hiển thị bàn
-                            LoadTables();
+        //                     // Làm mới hiển thị bàn
+        //                     LoadTables();
                             
-                            // Tạo hóa đơn mới
-                            CreateNewBill(tableId);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi tải dữ liệu hóa đơn: " + ex.Message,
-                              "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Console.WriteLine("Exception: " + ex.ToString());
-            }
-        }
+        //                     // Tạo hóa đơn mới
+        //                     CreateNewBill(tableId);
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         MessageBox.Show("Lỗi khi tải dữ liệu hóa đơn: " + ex.Message,
+        //                       "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //         Console.WriteLine("Exception: " + ex.ToString());
+        //     }
+        // }
 
         // Thêm phương thức tạo hóa đơn mới
         private int CreateNewBill(int tableId)
@@ -1786,8 +1764,24 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             {
                 MessageBox.Show("Lỗi khi tạo hóa đơn mới: " + ex.Message, "Lỗi", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Console.WriteLine("Exception details: " + ex.ToString());
+                Console.WriteLine("Exception: " + ex.ToString());
                 return -1;
+            }
+        }
+
+        private void SyncTableStatus()
+        {
+            try
+            {
+                // Chỉ cập nhật danh sách hóa đơn
+                LoadActiveBills();
+                
+                // Không tự động cập nhật trạng thái bàn nữa
+                // LoadTables();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi khi đồng bộ: " + ex.Message);
             }
         }
     }
