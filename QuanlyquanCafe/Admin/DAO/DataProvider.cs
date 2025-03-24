@@ -14,7 +14,7 @@ namespace QuanlyquanCafe.Admin.DAO
 
 
 
-        private string connStr = "Data Source=UNCL3KH4NH;Initial Catalog=RestaurantManagement;Integrated Security=True;TrustServerCertificate=True";
+private string connStr = @"Data Source=localhost;Initial Catalog=RestaurantManagement;User ID=sa;Password=0706871283;TrustServerCertificate=True";
 
         public static DataProvider Instance { 
             get { if (instance == null) instance = new DataProvider(); return DataProvider.instance; } 
