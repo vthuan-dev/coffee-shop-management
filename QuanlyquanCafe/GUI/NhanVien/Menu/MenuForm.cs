@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using System.Drawing.Printing;
 using System.Data.SqlClient;
-using System.Transactions;
+//using System.Transactions;
 
 namespace QuanlyquanCafe.GUI.NhanVien.Menu
 {
@@ -269,10 +269,11 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
                 // Lấy danh sách bàn từ database với trạng thái và thông tin hóa đơn
                 string query = @"
                     SELECT f.id, f.Name, f.Location, tf.Status,
-                           CASE WHEN b.id IS NOT NULL AND b.Status = 0 THEN 1 ELSE 0 END as HasActiveBill
+                           CASE WHEN MAX(CAST(b.id AS INT)) IS NOT NULL AND MAX(CAST(b.Status AS INT)) = 0 THEN 1 ELSE 0 END as HasActiveBill
                     FROM Facility f
                     INNER JOIN TableFacility tf ON f.id = tf.id
                     LEFT JOIN Bill b ON f.id = b.TableID AND b.Status = 0
+                    GROUP BY f.id, f.Name, f.Location, tf.Status
                     ORDER BY f.Location, f.Name";
 
                 DataTable data = DataProvider.Instance.ExecuteQuery(query);
@@ -345,72 +346,72 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             }
         }
 
-        private Button CreateTableButton(object table)
-        {
-            Button btn = new Button();
+        //private Button CreateTableButton(object table)
+        //{
+        //    Button btn = new Button();
             
-            try
-            {
-                // Lấy thuộc tính từ đối tượng bàn
-                int tableId = Convert.ToInt32(table.GetType().GetProperty("id")?.GetValue(table, null));
-                string tableName = table.GetType().GetProperty("Name")?.GetValue(table, null)?.ToString() ?? "Unknown";
-                string status = table.GetType().GetProperty("Status")?.GetValue(table, null)?.ToString() ?? "Unknown";
+        //    try
+        //    {
+        //        // Lấy thuộc tính từ đối tượng bàn
+        //        int tableId = Convert.ToInt32(table.GetType().GetProperty("id")?.GetValue(table, null));
+        //        string tableName = table.GetType().GetProperty("Name")?.GetValue(table, null)?.ToString() ?? "Unknown";
+        //        string status = table.GetType().GetProperty("Status")?.GetValue(table, null)?.ToString() ?? "Unknown";
                 
-                // Thiết lập thuộc tính của nút
-                btn.Width = tableButtonSize;
-                btn.Height = tableButtonSize;
-                btn.Tag = tableId; // Chỉ lưu ID của bàn
+        //        // Thiết lập thuộc tính của nút
+        //        btn.Width = tableButtonSize;
+        //        btn.Height = tableButtonSize;
+        //        btn.Tag = tableId; // Chỉ lưu ID của bàn
                 
-                // Hiển thị tên bàn và trạng thái
-                btn.Text = $"{tableName}\n({status})";
-                btn.Font = new Font("Arial", 9, FontStyle.Bold);
-                btn.TextAlign = ContentAlignment.MiddleCenter;
+        //        // Hiển thị tên bàn và trạng thái
+        //        btn.Text = $"{tableName}\n({status})";
+        //        btn.Font = new Font("Arial", 9, FontStyle.Bold);
+        //        btn.TextAlign = ContentAlignment.MiddleCenter;
                 
-                // Thiết lập màu sắc dựa trên trạng thái
-                SetTableButtonColor(btn, status);
+        //        // Thiết lập màu sắc dựa trên trạng thái
+        //        SetTableButtonColor(btn, status);
                 
-                // Thêm xử lý sự kiện
-                btn.Click += TableButton_Click;
+        //        // Thêm xử lý sự kiện
+        //        btn.Click += TableButton_Click;
                 
-                // Thêm xử lý sự kiện chuột phải
-                btn.MouseDown += (sender, e) => {
-                    if (e.Button == MouseButtons.Right)
-                    {
-                        selectedTable = tableId;
-                        tableContextMenu.Show(btn, e.Location);
-                    }
-                };
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi tạo nút bàn: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+        //        // Thêm xử lý sự kiện chuột phải
+        //        btn.MouseDown += (sender, e) => {
+        //            if (e.Button == MouseButtons.Right)
+        //            {
+        //                selectedTable = tableId;
+        //                tableContextMenu.Show(btn, e.Location);
+        //            }
+        //        };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Lỗi khi tạo nút bàn: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
             
-            return btn;
-        }
+        //    return btn;
+        //}
 
-        private void SetTableButtonColor(Button btn, string status)
-        {
-            switch (status)
-            {
-                case "Trống":
-                    btn.BackColor = Color.LightSkyBlue;  // Màu xanh nhạt cho bàn trống
-                    btn.ForeColor = Color.Black;
-                    break;
-                case "Có người":
-                    btn.BackColor = Color.Orange;       // Màu cam cho bàn có người
-                    btn.ForeColor = Color.Black;
-                    break;
-                case "Đã đặt":
-                    btn.BackColor = Color.LightPink;    // Màu hồng nhạt cho bàn đã đặt
-                    btn.ForeColor = Color.Black;
-                    break;
-                default:
-                    btn.BackColor = Color.LightGray;    // Màu mặc định
-                    btn.ForeColor = Color.Black;
-                    break;
-            }
-        }
+        //private void SetTableButtonColor(Button btn, string status)
+        //{
+        //    switch (status)
+        //    {
+        //        case "Trống":
+        //            btn.BackColor = Color.LightSkyBlue;  // Màu xanh nhạt cho bàn trống
+        //            btn.ForeColor = Color.Black;
+        //            break;
+        //        case "Có người":
+        //            btn.BackColor = Color.Orange;       // Màu cam cho bàn có người
+        //            btn.ForeColor = Color.Black;
+        //            break;
+        //        case "Đã đặt":
+        //            btn.BackColor = Color.LightPink;    // Màu hồng nhạt cho bàn đã đặt
+        //            btn.ForeColor = Color.Black;
+        //            break;
+        //        default:
+        //            btn.BackColor = Color.LightGray;    // Màu mặc định
+        //            btn.ForeColor = Color.Black;
+        //            break;
+        //    }
+        //}
 
         // Hàm trích xuất thông tin tầng từ vị trí
         private string ExtractFloorFromLocation(string location)
@@ -1104,80 +1105,80 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             }
         }
 
-        private void FilterActiveBills(string keyword)
-        {
-            try
-            {
-                foreach (DataGridViewRow row in dgvActiveBills.Rows)
-                {
-                    bool visible = false;
-                    foreach (DataGridViewCell cell in row.Cells)
-                    {
-                        if (cell.Value != null && cell.Value.ToString().ToLower().Contains(keyword.ToLower()))
-                        {
-                            visible = true;
-                            break;
-                        }
-                    }
-                    row.Visible = visible;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi lọc hóa đơn: " + ex.Message, 
-                               "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+        //private void FilterActiveBills(string keyword)
+        //{
+        //    try
+        //    {
+        //        foreach (DataGridViewRow row in dgvActiveBills.Rows)
+        //        {
+        //            bool visible = false;
+        //            foreach (DataGridViewCell cell in row.Cells)
+        //            {
+        //                if (cell.Value != null && cell.Value.ToString().ToLower().Contains(keyword.ToLower()))
+        //                {
+        //                    visible = true;
+        //                    break;
+        //                }
+        //            }
+        //            row.Visible = visible;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Lỗi khi lọc hóa đơn: " + ex.Message, 
+        //                       "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
 
-        private void CheckoutBillFromList(int billId)
-        {
-            try
-            {
-                string tableName = string.Empty;
+        //private void CheckoutBillFromList(int billId)
+        //{
+        //    try
+        //    {
+        //        string tableName = string.Empty;
                 
-                // Tìm tên bàn
-                foreach (DataGridViewRow row in dgvActiveBills.Rows)
-                {
-                    if (Convert.ToInt32(row.Cells["ID"].Value) == billId)
-                    {
-                        tableName = row.Cells["TableName"].Value.ToString();
-                        break;
-                    }
-                }
+        //        // Tìm tên bàn
+        //        foreach (DataGridViewRow row in dgvActiveBills.Rows)
+        //        {
+        //            if (Convert.ToInt32(row.Cells["ID"].Value) == billId)
+        //            {
+        //                tableName = row.Cells["TableName"].Value.ToString();
+        //                break;
+        //            }
+        //        }
                 
-                if (MessageBox.Show($"Xác nhận thanh toán hóa đơn #{billId} - Bàn: {tableName}?", 
-                                  "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    // Thanh toán hóa đơn
-                    if (BillDAO.Instance.CheckOut(billId))
-                    {
-                        MessageBox.Show("Thanh toán thành công!", "Thông báo");
+        //        if (MessageBox.Show($"Xác nhận thanh toán hóa đơn #{billId} - Bàn: {tableName}?", 
+        //                          "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+        //        {
+        //            // Thanh toán hóa đơn
+        //            if (BillDAO.Instance.CheckOut(billId))
+        //            {
+        //                MessageBox.Show("Thanh toán thành công!", "Thông báo");
                         
-                        // Làm mới danh sách
-                        LoadActiveBills();
-                        LoadTables();
+        //                // Làm mới danh sách
+        //                LoadActiveBills();
+        //                LoadTables();
                         
-                        // Nếu đang xem chi tiết hóa đơn này thì làm mới
-                        if (currentBillID == billId)
-                        {
-                            dgvOrderDetails.Rows.Clear();
-                            lblTotal.Text = "Tổng: 0 VNĐ";
-                            currentBillID = null;
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Không thể thanh toán hóa đơn!", 
-                                       "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi thanh toán: " + ex.Message, 
-                               "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+        //                // Nếu đang xem chi tiết hóa đơn này thì làm mới
+        //                if (currentBillID == billId)
+        //                {
+        //                    dgvOrderDetails.Rows.Clear();
+        //                    lblTotal.Text = "Tổng: 0 VNĐ";
+        //                    currentBillID = null;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                MessageBox.Show("Không thể thanh toán hóa đơn!", 
+        //                               "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Lỗi khi thanh toán: " + ex.Message, 
+        //                       "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
 
         private void txtBillSearch_Enter(object sender, EventArgs e)
         {
@@ -1447,28 +1448,28 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
             lblTotal.Text = string.Format("Tổng: {0:N0} VNĐ", total);
         }
 
-        private void RefreshTableStatus()
-        {
-            try
-            {
-                SyncTableStatus(); // Thêm vào đầu phương thức
-                // Làm mới danh sách bàn
-                LoadTables();
+        //private void RefreshTableStatus()
+        //{
+        //    try
+        //    {
+        //        SyncTableStatus(); // Thêm vào đầu phương thức
+        //        // Làm mới danh sách bàn
+        //        LoadTables();
                 
-                // Làm mới danh sách hóa đơn đang hoạt động
-                LoadActiveBills();
+        //        // Làm mới danh sách hóa đơn đang hoạt động
+        //        LoadActiveBills();
                 
-                // Cập nhật giao diện nếu cần
-                if (tabFloors.SelectedTab != null)
-                {
-                    tabFloors.SelectedTab.Refresh();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Lỗi khi làm mới trạng thái bàn: " + ex.Message);
-            }
-        }
+        //        // Cập nhật giao diện nếu cần
+        //        if (tabFloors.SelectedTab != null)
+        //        {
+        //            tabFloors.SelectedTab.Refresh();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("Lỗi khi làm mới trạng thái bàn: " + ex.Message);
+        //    }
+        //}
 
         private void InitializeTimers()
         {
@@ -1557,23 +1558,23 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
         }
 
         // Thêm phương thức mới để cập nhật trạng thái bàn
-        private void UpdateTableStatus(int tableId, string status)
-        {
-            try {
-                // Cập nhật trực tiếp vào cơ sở dữ liệu
-                string updateQuery = string.Format(
-                    "UPDATE TableFacility SET Status = N'{0}' WHERE id = {1}", 
-                    status, tableId);
-                int result = DataProvider.Instance.ExecuteNonQuery(updateQuery);
+        //private void UpdateTableStatus(int tableId, string status)
+        //{
+        //    try {
+        //        // Cập nhật trực tiếp vào cơ sở dữ liệu
+        //        string updateQuery = string.Format(
+        //            "UPDATE TableFacility SET Status = N'{0}' WHERE id = {1}", 
+        //            status, tableId);
+        //        int result = DataProvider.Instance.ExecuteNonQuery(updateQuery);
                 
-                if (result <= 0) {
-                    Console.WriteLine("Failed to update table status. Table ID: " + tableId);
-                }
-            }
-            catch (Exception ex) {
-                Console.WriteLine("Error updating table status: " + ex.Message);
-            }
-        }
+        //        if (result <= 0) {
+        //            Console.WriteLine("Failed to update table status. Table ID: " + tableId);
+        //        }
+        //    }
+        //    catch (Exception ex) {
+        //        Console.WriteLine("Error updating table status: " + ex.Message);
+        //    }
+        //}
 
         private void InitializeTableContextMenu()
         {
@@ -1731,43 +1732,43 @@ namespace QuanlyquanCafe.GUI.NhanVien.Menu
         // }
 
         // Thêm phương thức tạo hóa đơn mới
-        private int CreateNewBill(int tableId)
-        {
-            try
-            {
-                // Đơn giản hóa câu truy vấn thành một dòng
-                string insertQuery = "INSERT INTO Bill (TableID, CheckInDate, Status, CustomerLeft) OUTPUT INSERTED.id VALUES (@tableId, GETDATE(), 0, 1)";
+        //private int CreateNewBill(int tableId)
+        //{
+        //    try
+        //    {
+        //        // Đơn giản hóa câu truy vấn thành một dòng
+        //        string insertQuery = "INSERT INTO Bill (TableID, CheckInDate, Status, CustomerLeft) OUTPUT INSERTED.id VALUES (@tableId, GETDATE(), 0, 1)";
                 
-                // Truyền tham số là giá trị thô
-                object result = DataProvider.Instance.ExecuteScalar(insertQuery, new object[] { tableId });
+        //        // Truyền tham số là giá trị thô
+        //        object result = DataProvider.Instance.ExecuteScalar(insertQuery, new object[] { tableId });
                 
-                if (result != null)
-                {
-                    int newBillId = Convert.ToInt32(result);
-                    currentBillID = newBillId;
+        //        if (result != null)
+        //        {
+        //            int newBillId = Convert.ToInt32(result);
+        //            currentBillID = newBillId;
                     
-                    // Cập nhật trạng thái bàn
-                    string updateTableQuery = "UPDATE TableFacility SET Status = N'Có người' WHERE id = @tableId";
-                    DataProvider.Instance.ExecuteNonQuery(updateTableQuery, new object[] { tableId });
+        //            // Cập nhật trạng thái bàn
+        //            string updateTableQuery = "UPDATE TableFacility SET Status = N'Có người' WHERE id = @tableId";
+        //            DataProvider.Instance.ExecuteNonQuery(updateTableQuery, new object[] { tableId });
                     
-                    // Làm mới danh sách
-                    LoadActiveBills();
-                    LoadTables();
+        //            // Làm mới danh sách
+        //            LoadActiveBills();
+        //            LoadTables();
                     
-                    MessageBox.Show("Đã tạo hóa đơn mới thành công!", 
-                        "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return newBillId;
-                }
-                return -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi tạo hóa đơn mới: " + ex.Message, "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Console.WriteLine("Exception: " + ex.ToString());
-                return -1;
-            }
-        }
+        //            MessageBox.Show("Đã tạo hóa đơn mới thành công!", 
+        //                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //            return newBillId;
+        //        }
+        //        return -1;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Lỗi khi tạo hóa đơn mới: " + ex.Message, "Lỗi", 
+        //            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        Console.WriteLine("Exception: " + ex.ToString());
+        //        return -1;
+        //    }
+        //}
 
         private void SyncTableStatus()
         {
