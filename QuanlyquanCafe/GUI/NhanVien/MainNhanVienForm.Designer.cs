@@ -29,5 +29,7 @@ namespace QuanlyquanCafe.GUI.NhanVien
             this.ResumeLayout(false);
 
         }
+
+
     }
 } 

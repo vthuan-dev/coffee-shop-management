@@ -47,6 +47,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.checkBoxPasswd = new System.Windows.Forms.CheckBox();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -56,24 +57,24 @@
             // 
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 145F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 109F));
             this.tableLayoutPanel2.Controls.Add(this.btnSignup, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.button2, 1, 0);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(458, 305);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(344, 248);
+            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(288, 30);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(216, 24);
             this.tableLayoutPanel2.TabIndex = 22;
             this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
             // 
             // btnSignup
             // 
-            this.btnSignup.Location = new System.Drawing.Point(3, 2);
-            this.btnSignup.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnSignup.Location = new System.Drawing.Point(2, 2);
+            this.btnSignup.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnSignup.Name = "btnSignup";
-            this.btnSignup.Size = new System.Drawing.Size(100, 26);
+            this.btnSignup.Size = new System.Drawing.Size(75, 20);
             this.btnSignup.TabIndex = 0;
             this.btnSignup.Text = "Đăng kí";
             this.btnSignup.UseVisualStyleBackColor = true;
@@ -81,10 +82,10 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(146, 2);
-            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button2.Location = new System.Drawing.Point(109, 2);
+            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(100, 26);
+            this.button2.Size = new System.Drawing.Size(75, 20);
             this.button2.TabIndex = 1;
             this.button2.Text = "Xóa";
             this.button2.UseVisualStyleBackColor = true;
@@ -93,9 +94,10 @@
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(593, 380);
+            this.linkLabel1.Location = new System.Drawing.Point(445, 309);
+            this.linkLabel1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(0, 16);
+            this.linkLabel1.Size = new System.Drawing.Size(0, 13);
             this.linkLabel1.TabIndex = 19;
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
@@ -114,33 +116,34 @@
             this.tableLayoutPanel1.Controls.Add(this.label3, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.textBoxPhone, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label5, 0, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(391, 80);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(293, 65);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 5;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 46.75325F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 53.24675F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 52F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(427, 199);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(320, 162);
             this.tableLayoutPanel1.TabIndex = 18;
             this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             // 
             // textBoxEmail
             // 
-            this.textBoxEmail.Location = new System.Drawing.Point(126, 70);
-            this.textBoxEmail.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBoxEmail.Location = new System.Drawing.Point(94, 58);
+            this.textBoxEmail.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxEmail.Name = "textBoxEmail";
-            this.textBoxEmail.Size = new System.Drawing.Size(288, 22);
+            this.textBoxEmail.Size = new System.Drawing.Size(217, 20);
             this.textBoxEmail.TabIndex = 10;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 0);
+            this.label2.Location = new System.Drawing.Point(2, 0);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 16);
+            this.label2.Size = new System.Drawing.Size(55, 13);
             this.label2.TabIndex = 1;
             this.label2.Text = "Điện thoại";
             this.label2.Click += new System.EventHandler(this.label2_Click);
@@ -150,71 +153,78 @@
             this.cBoxRole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cBoxRole.FormattingEnabled = true;
             this.cBoxRole.Items.AddRange(new object[] {
-            "Quản Trị",
-            "Pha Chế",
-            "Thu Ngân"});
-            this.cBoxRole.Location = new System.Drawing.Point(126, 109);
+            "Quản trị",
+            "Pha chế",
+            "Thu ngân"});
+            this.cBoxRole.Location = new System.Drawing.Point(94, 89);
+            this.cBoxRole.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cBoxRole.Name = "cBoxRole";
-            this.cBoxRole.Size = new System.Drawing.Size(288, 24);
+            this.cBoxRole.Size = new System.Drawing.Size(217, 21);
             this.cBoxRole.TabIndex = 11;
             this.cBoxRole.Tag = "";
+            this.cBoxRole.SelectedIndexChanged += new System.EventHandler(this.cBoxRole_SelectedIndexChanged);
             // 
             // textBoxName
             // 
-            this.textBoxName.Location = new System.Drawing.Point(126, 37);
+            this.textBoxName.Location = new System.Drawing.Point(94, 30);
+            this.textBoxName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(288, 22);
+            this.textBoxName.Size = new System.Drawing.Size(217, 20);
             this.textBoxName.TabIndex = 8;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 106);
+            this.label7.Location = new System.Drawing.Point(2, 87);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(46, 16);
+            this.label7.Size = new System.Drawing.Size(38, 13);
             this.label7.TabIndex = 12;
             this.label7.Text = "Quyền";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(3, 68);
+            this.label6.Location = new System.Drawing.Point(2, 56);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(41, 16);
+            this.label6.Size = new System.Drawing.Size(32, 13);
             this.label6.TabIndex = 9;
             this.label6.Text = "Email";
             // 
             // textBoxPasswd
             // 
-            this.textBoxPasswd.Location = new System.Drawing.Point(126, 148);
-            this.textBoxPasswd.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBoxPasswd.Location = new System.Drawing.Point(94, 121);
+            this.textBoxPasswd.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxPasswd.Name = "textBoxPasswd";
-            this.textBoxPasswd.Size = new System.Drawing.Size(288, 22);
+            this.textBoxPasswd.Size = new System.Drawing.Size(217, 20);
             this.textBoxPasswd.TabIndex = 4;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 146);
+            this.label3.Location = new System.Drawing.Point(2, 119);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(61, 16);
+            this.label3.Size = new System.Drawing.Size(52, 13);
             this.label3.TabIndex = 2;
             this.label3.Text = "Mật khẩu";
             // 
             // textBoxPhone
             // 
-            this.textBoxPhone.Location = new System.Drawing.Point(126, 2);
-            this.textBoxPhone.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBoxPhone.Location = new System.Drawing.Point(94, 2);
+            this.textBoxPhone.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxPhone.Name = "textBoxPhone";
-            this.textBoxPhone.Size = new System.Drawing.Size(288, 22);
+            this.textBoxPhone.Size = new System.Drawing.Size(217, 20);
             this.textBoxPhone.TabIndex = 3;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 34);
+            this.label5.Location = new System.Drawing.Point(2, 28);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(31, 16);
+            this.label5.Size = new System.Drawing.Size(26, 13);
             this.label5.TabIndex = 6;
             this.label5.Text = "Tên";
             // 
@@ -222,9 +232,10 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 20F);
-            this.label1.Location = new System.Drawing.Point(539, 21);
+            this.label1.Location = new System.Drawing.Point(404, 17);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(152, 46);
+            this.label1.Size = new System.Drawing.Size(122, 37);
             this.label1.TabIndex = 17;
             this.label1.Text = "ĐĂNG KÍ";
             this.label1.Click += new System.EventHandler(this.label1_Click);
@@ -232,30 +243,44 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(36, 34);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pictureBox1.Location = new System.Drawing.Point(27, 28);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(257, 355);
+            this.pictureBox1.Size = new System.Drawing.Size(193, 288);
             this.pictureBox1.TabIndex = 23;
             this.pictureBox1.TabStop = false;
             // 
             // checkBoxPasswd
             // 
             this.checkBoxPasswd.AutoSize = true;
-            this.checkBoxPasswd.Location = new System.Drawing.Point(517, 259);
+            this.checkBoxPasswd.Location = new System.Drawing.Point(388, 210);
+            this.checkBoxPasswd.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.checkBoxPasswd.Name = "checkBoxPasswd";
-            this.checkBoxPasswd.Size = new System.Drawing.Size(130, 20);
+            this.checkBoxPasswd.Size = new System.Drawing.Size(109, 17);
             this.checkBoxPasswd.TabIndex = 24;
             this.checkBoxPasswd.Text = "Hiển thị mật khẩu";
             this.checkBoxPasswd.UseVisualStyleBackColor = true;
             this.checkBoxPasswd.CheckedChanged += new System.EventHandler(this.checkBoxPasswd_CheckedChanged);
             // 
+            // linkLabel2
+            // 
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Location = new System.Drawing.Point(408, 296);
+            this.linkLabel2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(102, 13);
+            this.linkLabel2.TabIndex = 25;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "Quay về đăng nhập";
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked_1);
+            // 
             // sign_up
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.ClientSize = new System.Drawing.Size(852, 428);
+            this.ClientSize = new System.Drawing.Size(639, 348);
+            this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.checkBoxPasswd);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.tableLayoutPanel2);
@@ -263,6 +288,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.label1);
             this.Location = new System.Drawing.Point(54, 34);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "sign_up";
             this.Text = "SIGN UP";
             this.Load += new System.EventHandler(this.sign_up_Load);
@@ -325,5 +351,6 @@
         private System.Windows.Forms.ComboBox cBoxRole;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox checkBoxPasswd;
+        private System.Windows.Forms.LinkLabel linkLabel2;
     }
 }

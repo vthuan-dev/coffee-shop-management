@@ -53,13 +53,13 @@ namespace QuanlyquanCafe
             Form nextForm;
             switch (role)
             {
-                case "Quản Trị":
+                case "Quản trị":
                     nextForm = new fAdmin(); 
                     break;
-                case "Thu Ngân":
+                case "Thu ngân":
                     nextForm = new MainNhanVienForm(); 
                     break;
-                case "Pha Chế":
+                case "Pha chế":
                     nextForm = new MainNhanVienForm(); 
                     break;
                 default:

@@ -202,70 +202,14 @@ namespace QuanlyquanCafe.Admin.DAO
         //    return DataProvider.Instance.ExecuteQuery("exec Bill_GetListBillByDate @checkIn , @checkOut", new object[] { checkIn, checkOut});
         //}
 
-        public int GetNumBillByDate(DateTime checkIn, DateTime checkOut)
+        public int  GetNumBillByDate(DateTime checkIn, DateTime checkOut)
         {
-            try {
-                string query = @"
-                    SELECT COUNT(*) 
-                    FROM Bill 
-                    WHERE Status = 1 
-                    AND CheckInDate >= @checkIn 
-                    AND CheckInDate <= @checkOut";
-                
-                System.Data.SqlClient.SqlParameter[] parameters = new System.Data.SqlClient.SqlParameter[]
-                {
-                    new System.Data.SqlClient.SqlParameter("@checkIn", checkIn),
-                    new System.Data.SqlClient.SqlParameter("@checkOut", checkOut)
-                };
-                
-                object result = DataProvider.Instance.ExecuteScalarWithParameters(query, parameters);
-                return result != null ? Convert.ToInt32(result) : 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error in GetNumBillByDate: " + ex.ToString());
-                return 0;
-            }
+            return (int)DataProvider.Instance.ExecuteScalar("exec Bill_GetNumBillByDate @checkIn , @checkOut", new object[] { checkIn, checkOut });
         }
 
         public DataTable GetListBillByDateAndPage(DateTime checkIn, DateTime checkOut, int pageNum)
         {
-            try {
-                // Thay thế stored procedure bằng truy vấn SQL trực tiếp
-                string query = @"
-                    SELECT 
-                        b.id AS [Mã hóa đơn], 
-                        f.Name AS [Tên bàn], 
-                        u.FullName AS [Người phục vụ],
-                        b.CheckInDate AS [Ngày thanh toán], 
-                        b.Discount AS [Giảm giá], 
-                        b.TotalPrice AS [Tổng tiền]
-                    FROM Bill b
-                    JOIN Facility f ON b.TableID = f.id
-                    LEFT JOIN Users u ON b.UserID = u.uid
-                    WHERE 
-                        b.Status = 1 AND 
-                        b.CheckInDate >= @checkIn AND 
-                        b.CheckInDate <= @checkOut
-                    ORDER BY b.CheckInDate DESC
-                    OFFSET (@page - 1) * 10 ROWS
-                    FETCH NEXT 10 ROWS ONLY";
-                
-                // Sử dụng SqlParameter để tránh lỗi định dạng ngày tháng
-                System.Data.SqlClient.SqlParameter[] parameters = new System.Data.SqlClient.SqlParameter[]
-                {
-                    new System.Data.SqlClient.SqlParameter("@checkIn", checkIn),
-                    new System.Data.SqlClient.SqlParameter("@checkOut", checkOut),
-                    new System.Data.SqlClient.SqlParameter("@page", pageNum)
-                };
-                
-                return DataProvider.Instance.ExecuteQueryWithParameters(query, parameters);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error in GetListBillByDateAndPage: " + ex.ToString());
-                throw;
-            }
+            return DataProvider.Instance.ExecuteQuery("exec Bill_GetListBillByDateAndPage @checkIn , @checkOut, @page", new object[] { checkIn, checkOut, pageNum });
         }
 
         public void DeleteBillByTableID(int id)
