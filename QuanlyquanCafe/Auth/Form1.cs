@@ -1,7 +1,7 @@
 ﻿using QuanlyquanCafe.Admin;
 using QuanlyquanCafe.Admin.DAO;
 using QuanlyquanCafe.GUI.NhanVien;
-using QuanlyquanCafe.Auth;
+//using QuanlyquanCafe.Auth;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -84,20 +84,10 @@ namespace QuanlyquanCafe
 
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
+        //private void label1_Click(object sender, EventArgs e)
+        //{
 
-        }
-
-        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            this.Hide(); // Ẩn form hiện tại (FormLogin)
-
-            sign_up registerForm = new sign_up();
-            registerForm.ShowDialog(); // Mở form đăng ký dưới dạng hộp thoại
-
-            this.Close(); // Đóng FormLogin sau khi đăng ký xong
-        }
+        //}
 
         private void checkBoxPasswd_CheckedChanged(object sender, EventArgs e)
         {

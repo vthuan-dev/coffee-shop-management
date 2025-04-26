@@ -14,7 +14,7 @@ namespace QuanlyquanCafe.Admin.DAO
 
 
 
-        private string connStr = @"Data Source=LAPTOP-8T9CBJEM\SQLEXPRESS;Initial Catalog=RestaurantManagement;Integrated Security=True;TrustServerCertificate=True";
+        private string connStr = @"Data Source=.\SQLEXPRESS;Initial Catalog=RestaurantManagement;Integrated Security=True;";
         public static DataProvider Instance { 
             get { if (instance == null) instance = new DataProvider(); return DataProvider.instance; } 
             private set => DataProvider.instance = value; 
