@@ -12,7 +12,6 @@ D:\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.Auth.sign_up.r
 D:\Workspaces\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.csproj.AssemblyReference.cache
 D:\Workspaces\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.Admin.fAdmin.resources
 D:\Workspaces\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.Form1.resources
-D:\Workspaces\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.Auth.sign_up.resources
 D:\Workspaces\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.Properties.Resources.resources
 D:\Workspaces\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.csproj.GenerateResource.cache
 D:\Workspaces\coffee-shop-management\QuanlyquanCafe\obj\Debug\QuanlyquanCafe.csproj.CoreCompileInputs.cache

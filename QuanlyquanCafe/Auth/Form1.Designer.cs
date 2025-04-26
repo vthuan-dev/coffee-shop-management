@@ -36,7 +36,6 @@ namespace QuanlyquanCafe
             this.btnLogin = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.checkBoxPasswd = new System.Windows.Forms.CheckBox();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
@@ -101,17 +100,6 @@ namespace QuanlyquanCafe
             this.checkBoxPasswd.Text = "Hiển thị mật khẩu";
             this.checkBoxPasswd.UseVisualStyleBackColor = true;
             this.checkBoxPasswd.CheckedChanged += new System.EventHandler(this.checkBoxPasswd_CheckedChanged);
-            // 
-            // linkLabel2
-            // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(561, 300);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(138, 16);
-            this.linkLabel2.TabIndex = 14;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "Bạn chưa có tài khoản";
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
             // linkLabel1
             // 
@@ -183,7 +171,7 @@ namespace QuanlyquanCafe
             this.label1.Size = new System.Drawing.Size(213, 46);
             this.label1.TabIndex = 11;
             this.label1.Text = "ĐĂNG NHẬP";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            //this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // pictureBox1
             // 
@@ -204,7 +192,6 @@ namespace QuanlyquanCafe
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.checkBoxPasswd);
-            this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.label1);
@@ -230,7 +217,6 @@ namespace QuanlyquanCafe
         private TextBox textBoxPasswd;
         private TableLayoutPanel tableLayoutPanel1;
         private LinkLabel linkLabel1;
-        private LinkLabel linkLabel2;
         private CheckBox checkBoxPasswd;
         private TableLayoutPanel tableLayoutPanel2;
         private Button btnLogin;

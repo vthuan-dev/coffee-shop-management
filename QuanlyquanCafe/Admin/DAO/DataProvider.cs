@@ -14,7 +14,7 @@ namespace QuanlyquanCafe.Admin.DAO
 
 
 
-        private string connStr = @"Data Source=localhost;Initial Catalog=RestaurantManagement;Integrated Security=True;TrustServerCertificate=True";
+        private string connStr = @"Data Source=.\SQLEXPRESS;Initial Catalog=RestaurantManagement;Integrated Security=True;";
         public static DataProvider Instance { 
             get { if (instance == null) instance = new DataProvider(); return DataProvider.instance; } 
             private set => DataProvider.instance = value; 
@@ -132,32 +132,5 @@ namespace QuanlyquanCafe.Admin.DAO
             return data;
         }
 
-        public object ExecuteScalarWithParameters(string query, object[] parameters = null)
-        {
-            object result = null;
-
-            using (SqlConnection connection = new SqlConnection(connStr))
-            {
-                connection.Open();
-
-                SqlCommand command = new SqlCommand(query, connection);
-
-                if (parameters != null)
-                {
-                    foreach (object parameter in parameters)
-                    {
-                        if (parameter is SqlParameter sqlParam)
-                        {
-                            command.Parameters.Add(sqlParam);
-                        }
-                    }
-                }
-
-                result = command.ExecuteScalar();
-                connection.Close();
-            }
-
-            return result;
-        }
     }
 }
